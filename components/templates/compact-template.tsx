@@ -1,3 +1,5 @@
+"use client";
+
 import { useTranslation } from "@/hooks/use-translation";
 import type { ResumeData } from "../resume-builder";
 import { Github, Send, Linkedin, Twitter, Globe } from "lucide-react";
@@ -46,8 +48,8 @@ export function CompactTemplate({ data }: CompactTemplateProps) {
 
   return (
     <div
-      className="bg-white text-black min-h-[800px] p-6 font-sans"
       style={{ fontFamily: "Arial, sans-serif" }}
+      data-testid="compact-template"
     >
       {/* Header */}
       <header className="flex gap-4 mb-4">
@@ -154,20 +156,52 @@ export function CompactTemplate({ data }: CompactTemplateProps) {
                   >
                     <h4 className="font-bold mb-1">
                       {exp.company || t("experience.company")},{" "}
-                      {exp.location || t("experience.location")} |{" "}
+                      {exp.location && exp.location !== "" && (
+                        <>
+                          {exp.location}
+                          {exp.location && exp.position && " | "}
+                        </>
+                      )}
                       {exp.position || t("experience.position")}
                     </h4>
                     <p className="text-sm mb-2 font-medium">
                       {exp.startDate} –{" "}
                       {exp.current ? t("experience.present") : exp.endDate}
                     </p>
-                    {exp.description && (
+                    {exp.description && exp.description !== "" && (
                       <div className="text-sm leading-relaxed">
                         {exp.description.split("\n").map((line, i) => (
                           <p key={i} className="mb-1">
                             {line}
                           </p>
                         ))}
+                      </div>
+                    )}
+                    {exp.achievements && (
+                      <div className="mt-2">
+                        <h5 className="font-bold text-sm mb-1">
+                          {t("experience.achievements")}:
+                        </h5>
+                        <ul className="text-sm leading-relaxed align-baseline ml-4">
+                          {exp.achievements
+                            .split("\n")
+                            .filter((line) => line.trim())
+                            .map((achievement, i) => (
+                              <li key={i}>
+                                <span>• </span>
+                                {achievement.trim()}
+                              </li>
+                            ))}
+                        </ul>
+                      </div>
+                    )}
+
+                    {exp.techStack && (
+                      <div className="mt-2">
+                        <h5 className="font-bold text-sm mb-1">
+                          {t("experience.techStack")}:
+                        </h5>
+                        <p className="text-sm">{exp.techStack}</p>
                       </div>
                     )}
                   </li>
@@ -183,9 +217,10 @@ export function CompactTemplate({ data }: CompactTemplateProps) {
           {skills.length > 0 && (
             <section className="mb-6">
               <h3 className="text-lg font-bold mb-3">{t("skills.title")}</h3>
-              <ul className="list-disk p-0 space-y-1">
+              <ul className="align-baseline p-0 space-y-1">
                 {skills.map((skill, index) => (
                   <li key={index} className="text-sm">
+                    <span>• </span>
                     {skill}
                   </li>
                 ))}

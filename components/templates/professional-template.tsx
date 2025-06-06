@@ -1,3 +1,5 @@
+"use client";
+
 import { useTranslation } from "@/hooks/use-translation";
 import type { ResumeData } from "../resume-builder";
 
@@ -10,7 +12,10 @@ export function ProfessionalTemplate({ data }: ProfessionalTemplateProps) {
   const { personalInfo, education, experience, skills } = data;
 
   return (
-    <div className="bg-white text-gray-900 min-h-[800px] p-8 font-serif">
+    <div
+      className="bg-white text-gray-900 font-serif"
+      data-testid="professional-template"
+    >
       {/* Header */}
       <div className="border-b-2 border-gray-300 pb-6 mb-8">
         <h1 className="text-3xl font-bold mb-2">
@@ -98,6 +103,26 @@ export function ProfessionalTemplate({ data }: ProfessionalTemplateProps) {
                       </li>
                     ))}
                   </ul>
+                )}
+                {exp.achievements && (
+                  <div className="mt-3">
+                    <h4 className="font-bold text-sm mb-2">Achievements:</h4>
+                    <ul className="text-gray-700 text-sm leading-relaxed list-disc ml-4">
+                      {exp.achievements
+                        .split("\n")
+                        .filter((line) => line.trim())
+                        .map((achievement, i) => (
+                          <li key={i}>{achievement.trim()}</li>
+                        ))}
+                    </ul>
+                  </div>
+                )}
+
+                {exp.techStack && (
+                  <div className="mt-3">
+                    <h4 className="font-bold text-sm mb-2">Technologies:</h4>
+                    <p className="text-gray-700 text-sm">{exp.techStack}</p>
+                  </div>
                 )}
               </div>
             ))}

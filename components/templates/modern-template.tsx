@@ -1,3 +1,5 @@
+"use client";
+
 import { useTranslation } from "@/hooks/use-translation";
 import type { ResumeData } from "../resume-builder";
 import { Github, Send, Linkedin, Twitter, Globe } from "lucide-react";
@@ -45,7 +47,10 @@ export function ModernTemplate({ data }: ModernTemplateProps) {
   const { personalInfo, education, experience, skills } = data;
 
   return (
-    <div className="bg-white text-gray-900 min-h-[800px] p-8 font-sans">
+    <div
+      className="bg-white text-gray-900 font-sans"
+      data-testid="modern-template"
+    >
       {/* Header */}
       <div className="text-center mb-12">
         {personalInfo.photo && (
@@ -156,6 +161,26 @@ export function ModernTemplate({ data }: ModernTemplateProps) {
                   <p className="text-gray-700 leading-relaxed">
                     {exp.description}
                   </p>
+                )}
+                {exp.achievements && (
+                  <div className="mt-3">
+                    <h4 className="font-medium text-sm mb-2">Achievements:</h4>
+                    <ul className="text-gray-700 text-sm leading-relaxed list-disc ml-4">
+                      {exp.achievements
+                        .split("\n")
+                        .filter((line) => line.trim())
+                        .map((achievement, i) => (
+                          <li key={i}>{achievement.trim()}</li>
+                        ))}
+                    </ul>
+                  </div>
+                )}
+
+                {exp.techStack && (
+                  <div className="mt-3">
+                    <h4 className="font-medium text-sm mb-2">Technologies:</h4>
+                    <p className="text-gray-700 text-sm">{exp.techStack}</p>
+                  </div>
                 )}
               </div>
             ))}

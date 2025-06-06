@@ -1,7 +1,7 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useFieldArray, useForm } from "react-hook-form";
-import * as z from "zod";
+import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -22,7 +22,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Plus, Trash2 } from "lucide-react";
-import type { ResumeData } from "./resume-builder";
+import type { ResumeData } from "../resume-builder";
 import { useTranslation } from "@/hooks/use-translation";
 
 interface ExperienceFormProps {
@@ -41,6 +41,8 @@ export function ExperienceForm({ initialData, onSave }: ExperienceFormProps) {
     endDate: z.string().optional(),
     current: z.boolean().default(false),
     description: z.string().min(1, t("experience.descriptionRequired")),
+    achievements: z.string().optional(),
+    techStack: z.string().optional(),
   });
 
   const formSchema = z.object({
@@ -63,6 +65,8 @@ export function ExperienceForm({ initialData, onSave }: ExperienceFormProps) {
               endDate: "",
               current: false,
               description: "",
+              achievements: "",
+              techStack: "",
             },
           ],
     },
@@ -218,7 +222,7 @@ export function ExperienceForm({ initialData, onSave }: ExperienceFormProps) {
                             if (checked) {
                               form.setValue(
                                 `experience.${index}.endDate`,
-                                t("experience.present")
+                                "Present"
                               );
                             } else {
                               form.setValue(`experience.${index}.endDate`, "");
@@ -253,6 +257,46 @@ export function ExperienceForm({ initialData, onSave }: ExperienceFormProps) {
                     </FormItem>
                   )}
                 />
+
+                <FormField
+                  control={form.control}
+                  name={`experience.${index}.achievements`}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>
+                        {t("experience.achievements")} ({t("common.optional")})
+                      </FormLabel>
+                      <FormControl>
+                        <Textarea
+                          placeholder={t("experience.achievementsPlaceholder")}
+                          className="min-h-[80px]"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name={`experience.${index}.techStack`}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>
+                        {t("experience.techStack")} ({t("common.optional")})
+                      </FormLabel>
+                      <FormControl>
+                        <Textarea
+                          placeholder={t("experience.techStackPlaceholder")}
+                          className="min-h-[60px]"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
               </div>
             ))}
 
@@ -270,6 +314,8 @@ export function ExperienceForm({ initialData, onSave }: ExperienceFormProps) {
                   endDate: "",
                   current: false,
                   description: "",
+                  achievements: "",
+                  techStack: "",
                 })
               }
             >

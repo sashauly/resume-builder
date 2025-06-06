@@ -1,19 +1,19 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { usePathname } from "next/navigation"
-import { Home, FileText, Settings } from "lucide-react"
-import { useTranslation } from "@/hooks/use-translation"
-import { useMobile } from "@/hooks/use-mobile"
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { Home, FileText, Settings } from "lucide-react";
+import { useTranslation } from "@/hooks/use-translation";
+import { useMobile } from "@/hooks/use-mobile";
 
 export function MobileNavigation() {
-  const pathname = usePathname()
-  const { t } = useTranslation()
-  const isMobile = useMobile()
+  const pathname = usePathname();
+  const { t } = useTranslation();
+  const isMobile = useMobile();
 
   // Only show on mobile
   if (!isMobile) {
-    return null
+    return null;
   }
 
   return (
@@ -48,5 +48,5 @@ export function MobileNavigation() {
         </Link>
       </div>
     </div>
-  )
+  );
 }

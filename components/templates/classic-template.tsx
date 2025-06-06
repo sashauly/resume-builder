@@ -1,3 +1,5 @@
+"use client";
+
 import { useTranslation } from "@/hooks/use-translation";
 import type { ResumeData } from "../resume-builder";
 import { Github, Send, Linkedin, Twitter, Globe } from "lucide-react";
@@ -45,7 +47,10 @@ export function ClassicTemplate({ data }: ClassicTemplateProps) {
   const { personalInfo, education, experience, skills } = data;
 
   return (
-    <div className="bg-white text-black min-h-[800px] grid grid-cols-3 gap-0 font-serif">
+    <div
+      className="bg-white text-black grid grid-cols-3 gap-0 font-serif"
+      data-testid="classic-template"
+    >
       {/* Left Sidebar */}
       <div className="bg-slate-800 text-white p-6 col-span-1">
         {/* Profile Section */}
@@ -231,6 +236,30 @@ export function ClassicTemplate({ data }: ClassicTemplateProps) {
                     <p className="text-gray-700 leading-relaxed">
                       {exp.description}
                     </p>
+                  )}
+                  {exp.achievements && (
+                    <div className="mt-3">
+                      <h4 className="font-semibold text-sm mb-2">
+                        Achievements:
+                      </h4>
+                      <ul className="text-gray-700 text-sm leading-relaxed list-disc ml-4">
+                        {exp.achievements
+                          .split("\n")
+                          .filter((line) => line.trim())
+                          .map((achievement, i) => (
+                            <li key={i}>{achievement.trim()}</li>
+                          ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  {exp.techStack && (
+                    <div className="mt-3">
+                      <h4 className="font-semibold text-sm mb-2">
+                        Technologies:
+                      </h4>
+                      <p className="text-gray-700 text-sm">{exp.techStack}</p>
+                    </div>
                   )}
                 </div>
               ))}

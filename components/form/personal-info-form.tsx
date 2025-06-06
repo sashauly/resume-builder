@@ -1,24 +1,43 @@
-"use client"
-import { zodResolver } from "@hookform/resolvers/zod"
-import type React from "react"
+"use client";
+import { zodResolver } from "@hookform/resolvers/zod";
+import type React from "react";
 
-import { useForm, useFieldArray } from "react-hook-form"
-import * as z from "zod"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Label } from "@/components/ui/label"
-import type { ResumeData } from "./resume-builder"
-import { useTranslation } from "@/hooks/use-translation"
-import { useState, useCallback, memo } from "react"
-import { Upload, X, Plus, Trash2, Github, Send } from "lucide-react"
+import { useForm, useFieldArray } from "react-hook-form";
+import * as z from "zod";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
+import type { ResumeData } from "../resume-builder";
+import { useTranslation } from "@/hooks/use-translation";
+import { useState, useCallback, memo } from "react";
+import { Upload, X, Plus, Trash2, Github, Send } from "lucide-react";
 
 interface PersonalInfoFormProps {
-  initialData: ResumeData["personalInfo"]
-  onSave: (data: ResumeData["personalInfo"]) => void
+  initialData: ResumeData["personalInfo"];
+  onSave: (data: ResumeData["personalInfo"]) => void;
 }
 
 const SOCIAL_PLATFORMS = [
@@ -27,11 +46,16 @@ const SOCIAL_PLATFORMS = [
   { value: "linkedin", label: "LinkedIn", icon: null },
   { value: "twitter", label: "Twitter", icon: null },
   { value: "website", label: "Website", icon: null },
-] as const
+] as const;
 
-export const PersonalInfoForm = memo(function PersonalInfoForm({ initialData, onSave }: PersonalInfoFormProps) {
-  const { t } = useTranslation()
-  const [photoPreview, setPhotoPreview] = useState<string>(initialData.photo || "")
+export const PersonalInfoForm = memo(function PersonalInfoForm({
+  initialData,
+  onSave,
+}: PersonalInfoFormProps) {
+  const { t } = useTranslation();
+  const [photoPreview, setPhotoPreview] = useState<string>(
+    initialData.photo || ""
+  );
 
   const formSchema = z.object({
     name: z.string().min(1, t("personalInfo.nameRequired")),
@@ -46,9 +70,9 @@ export const PersonalInfoForm = memo(function PersonalInfoForm({ initialData, on
         platform: z.string().min(1, "Platform is required"),
         url: z.string().optional(),
         username: z.string().min(1, "Username is required"),
-      }),
+      })
     ),
-  })
+  });
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -56,44 +80,44 @@ export const PersonalInfoForm = memo(function PersonalInfoForm({ initialData, on
       ...initialData,
       socialLinks: initialData.socialLinks || [],
     },
-  })
+  });
 
   const { fields, append, remove } = useFieldArray({
     control: form.control,
     name: "socialLinks",
-  })
+  });
 
   const handlePhotoUpload = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
-      const file = event.target.files?.[0]
+      const file = event.target.files?.[0];
       if (file) {
-        const reader = new FileReader()
+        const reader = new FileReader();
         reader.onload = (e) => {
-          const result = e.target?.result as string
-          setPhotoPreview(result)
-          form.setValue("photo", result)
-        }
-        reader.readAsDataURL(file)
+          const result = e.target?.result as string;
+          setPhotoPreview(result);
+          form.setValue("photo", result);
+        };
+        reader.readAsDataURL(file);
       }
     },
-    [form],
-  )
+    [form]
+  );
 
   const removePhoto = useCallback(() => {
-    setPhotoPreview("")
-    form.setValue("photo", "")
-  }, [form])
+    setPhotoPreview("");
+    form.setValue("photo", "");
+  }, [form]);
 
   const addSocialLink = useCallback(() => {
     append({
       platform: "",
       url: "",
       username: "",
-    })
-  }, [append])
+    });
+  }, [append]);
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    onSave(values)
+    onSave(values);
   }
 
   return (
@@ -136,7 +160,9 @@ export const PersonalInfoForm = memo(function PersonalInfoForm({ initialData, on
                       ) : (
                         <div className="border-2 border-dashed border-muted-foreground/25 rounded-lg p-6 text-center">
                           <Upload className="mx-auto h-12 w-12 text-muted-foreground/50" />
-                          <p className="mt-2 text-sm text-muted-foreground">{t("personalInfo.photoUpload")}</p>
+                          <p className="mt-2 text-sm text-muted-foreground">
+                            {t("personalInfo.photoUpload")}
+                          </p>
                         </div>
                       )}
                       <Input
@@ -158,10 +184,14 @@ export const PersonalInfoForm = memo(function PersonalInfoForm({ initialData, on
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>
-                    {t("personalInfo.name")} <span className="text-red-500">*</span>
+                    {t("personalInfo.name")}{" "}
+                    <span className="text-red-500">*</span>
                   </FormLabel>
                   <FormControl>
-                    <Input placeholder={t("personalInfo.namePlaceholder")} {...field} />
+                    <Input
+                      placeholder={t("personalInfo.namePlaceholder")}
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -177,7 +207,10 @@ export const PersonalInfoForm = memo(function PersonalInfoForm({ initialData, on
                     {t("personalInfo.jobTitle")} ({t("common.optional")})
                   </FormLabel>
                   <FormControl>
-                    <Input placeholder={t("personalInfo.jobTitlePlaceholder")} {...field} />
+                    <Input
+                      placeholder={t("personalInfo.jobTitlePlaceholder")}
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -190,10 +223,14 @@ export const PersonalInfoForm = memo(function PersonalInfoForm({ initialData, on
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>
-                    {t("personalInfo.email")} <span className="text-red-500">*</span>
+                    {t("personalInfo.email")}{" "}
+                    <span className="text-red-500">*</span>
                   </FormLabel>
                   <FormControl>
-                    <Input placeholder={t("personalInfo.emailPlaceholder")} {...field} />
+                    <Input
+                      placeholder={t("personalInfo.emailPlaceholder")}
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -206,10 +243,14 @@ export const PersonalInfoForm = memo(function PersonalInfoForm({ initialData, on
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>
-                    {t("personalInfo.phone")} <span className="text-red-500">*</span>
+                    {t("personalInfo.phone")}{" "}
+                    <span className="text-red-500">*</span>
                   </FormLabel>
                   <FormControl>
-                    <Input placeholder={t("personalInfo.phonePlaceholder")} {...field} />
+                    <Input
+                      placeholder={t("personalInfo.phonePlaceholder")}
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -225,7 +266,10 @@ export const PersonalInfoForm = memo(function PersonalInfoForm({ initialData, on
                     {t("personalInfo.address")} ({t("common.optional")})
                   </FormLabel>
                   <FormControl>
-                    <Input placeholder={t("personalInfo.addressPlaceholder")} {...field} />
+                    <Input
+                      placeholder={t("personalInfo.addressPlaceholder")}
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -238,32 +282,52 @@ export const PersonalInfoForm = memo(function PersonalInfoForm({ initialData, on
                 <Label className="text-sm font-medium">
                   {t("personalInfo.socialLinks")} ({t("common.optional")})
                 </Label>
-                <Button type="button" variant="outline" size="sm" onClick={addSocialLink}>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={addSocialLink}
+                >
                   <Plus className="mr-2 h-4 w-4" />
                   {t("personalInfo.addSocialLink")}
                 </Button>
               </div>
 
               {fields.map((field, index) => (
-                <div key={field.id} className="grid grid-cols-12 gap-2 items-end p-3 border rounded-md">
+                <div
+                  key={field.id}
+                  className="grid grid-cols-12 gap-2 items-end p-3 border rounded-md"
+                >
                   <div className="col-span-4">
                     <FormField
                       control={form.control}
                       name={`socialLinks.${index}.platform`}
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-xs">{t("personalInfo.platform")}</FormLabel>
-                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormLabel className="text-xs">
+                            {t("personalInfo.platform")}
+                          </FormLabel>
+                          <Select
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}
+                          >
                             <FormControl>
                               <SelectTrigger>
-                                <SelectValue placeholder={t("personalInfo.selectPlatform")} />
+                                <SelectValue
+                                  placeholder={t("personalInfo.selectPlatform")}
+                                />
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
                               {SOCIAL_PLATFORMS.map((platform) => (
-                                <SelectItem key={platform.value} value={platform.value}>
+                                <SelectItem
+                                  key={platform.value}
+                                  value={platform.value}
+                                >
                                   <div className="flex items-center gap-2">
-                                    {platform.icon && <platform.icon className="h-4 w-4" />}
+                                    {platform.icon && (
+                                      <platform.icon className="h-4 w-4" />
+                                    )}
                                     {platform.label}
                                   </div>
                                 </SelectItem>
@@ -282,9 +346,16 @@ export const PersonalInfoForm = memo(function PersonalInfoForm({ initialData, on
                       name={`socialLinks.${index}.username`}
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-xs">{t("personalInfo.username")}</FormLabel>
+                          <FormLabel className="text-xs">
+                            {t("personalInfo.username")}
+                          </FormLabel>
                           <FormControl>
-                            <Input placeholder={t("personalInfo.usernamePlaceholder")} {...field} />
+                            <Input
+                              placeholder={t(
+                                "personalInfo.usernamePlaceholder"
+                              )}
+                              {...field}
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -293,7 +364,13 @@ export const PersonalInfoForm = memo(function PersonalInfoForm({ initialData, on
                   </div>
 
                   <div className="col-span-1">
-                    <Button type="button" variant="ghost" size="icon" onClick={() => remove(index)} className="h-8 w-8">
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => remove(index)}
+                      className="h-8 w-8"
+                    >
                       <Trash2 className="h-4 w-4" />
                     </Button>
                   </div>
@@ -310,7 +387,11 @@ export const PersonalInfoForm = memo(function PersonalInfoForm({ initialData, on
                     {t("personalInfo.summary")} ({t("common.optional")})
                   </FormLabel>
                   <FormControl>
-                    <Textarea placeholder={t("personalInfo.summaryPlaceholder")} className="min-h-[100px]" {...field} />
+                    <Textarea
+                      placeholder={t("personalInfo.summaryPlaceholder")}
+                      className="min-h-[100px]"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -324,5 +405,5 @@ export const PersonalInfoForm = memo(function PersonalInfoForm({ initialData, on
         </Form>
       </CardContent>
     </Card>
-  )
-})
+  );
+});

@@ -1,15 +1,17 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback, useMemo } from "react";
-import { PersonalInfoForm } from "@/components/personal-info-form";
-import { EducationForm } from "@/components/education-form";
-import { ExperienceForm } from "@/components/experience-form";
-import { SkillsForm } from "@/components/skills-form";
+import { PersonalInfoForm } from "@/components/form/personal-info-form";
+import { EducationForm } from "@/components/form/education-form";
+import { ExperienceForm } from "@/components/form/experience-form";
+import { SkillsForm } from "@/components/form/skills-form";
 import { ResumePreview } from "@/components/resume-preview";
 import { TemplateSelector } from "@/components/template-selector";
-import { ExportDialog } from "@/components/export-dialog";
+import { ExportDialog } from "@/components/export/export-dialog";
+import { PDFExporter } from "@/components/export/pdf-exporter";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useTranslation } from "@/hooks/use-translation";
 import { toast } from "sonner";
 import { useSearchParams, useRouter } from "next/navigation";
@@ -57,6 +59,8 @@ export type ResumeData = {
     endDate: string;
     current: boolean;
     description: string;
+    achievements: string;
+    techStack: string;
   }[];
   skills: string[];
 };
@@ -91,6 +95,8 @@ const initialResumeData: ResumeData = {
       endDate: "",
       current: false,
       description: "",
+      achievements: "",
+      techStack: "",
     },
   ],
   skills: [],
@@ -101,11 +107,8 @@ export function ResumeBuilder() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const resumeId = searchParams.get("id");
-  const resumePreviewRef = useRef<HTMLDivElement>(null);
 
-  const [activeTab, setActiveTab] = useState<
-    "personal" | "education" | "experience" | "skills" | "preview" | string
-  >("personal");
+  const [activeTab, setActiveTab] = useState("personal");
   const [resumeData, setResumeData] = useState<ResumeData>(initialResumeData);
   const [saveDialogOpen, setSaveDialogOpen] = useState(false);
   const [exportDialogOpen, setExportDialogOpen] = useState(false);
@@ -114,6 +117,7 @@ export function ResumeBuilder() {
   const [selectedTemplate, setSelectedTemplate] = useState<
     "classic" | "modern" | "professional" | "compact"
   >("classic");
+  // const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
 
   // Load resume data on mount or when resumeId changes
   useEffect(() => {
@@ -278,75 +282,80 @@ export function ResumeBuilder() {
         </div>
       </div>
 
-      <div className="grid md:grid-cols-2 gap-8">
-        <div className="space-y-6">
-          <Tabs
-            value={activeTab}
-            onValueChange={setActiveTab}
-            className="w-full"
-          >
-            <TabsList className="grid grid-cols-5 w-full">
-              <TabsTrigger value="personal">
-                {t("builder.personal")}
-              </TabsTrigger>
-              <TabsTrigger value="education">
-                {t("builder.education")}
-              </TabsTrigger>
-              <TabsTrigger value="experience">
-                {t("builder.experience")}
-              </TabsTrigger>
-              <TabsTrigger value="skills">{t("builder.skills")}</TabsTrigger>
-              <TabsTrigger value="preview">{t("builder.preview")}</TabsTrigger>
-            </TabsList>
-            <TabsContent value="personal" className="mt-6">
-              <PersonalInfoForm
-                initialData={resumeData.personalInfo}
-                onSave={updatePersonalInfo}
+      <div className="space-y-6">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <TabsList className="grid grid-cols-5 w-full text-xs sm:text-sm">
+            <TabsTrigger value="personal" className="px-1 sm:px-3">
+              {t("builder.personal")}
+            </TabsTrigger>
+            <TabsTrigger value="education" className="px-1 sm:px-3">
+              {t("builder.education")}
+            </TabsTrigger>
+            <TabsTrigger value="experience" className="px-1 sm:px-3">
+              {t("builder.experience")}
+            </TabsTrigger>
+            <TabsTrigger value="skills" className="px-1 sm:px-3">
+              {t("builder.skills")}
+            </TabsTrigger>
+            <TabsTrigger value="preview" className="px-1 sm:px-3">
+              {t("builder.preview")}
+            </TabsTrigger>
+          </TabsList>
+          <TabsContent value="personal" className="mt-6">
+            <PersonalInfoForm
+              initialData={resumeData.personalInfo}
+              onSave={updatePersonalInfo}
+            />
+          </TabsContent>
+          <TabsContent value="education" className="mt-6">
+            <EducationForm
+              initialData={resumeData.education}
+              onSave={updateEducation}
+            />
+          </TabsContent>
+          <TabsContent value="experience" className="mt-6">
+            <ExperienceForm
+              initialData={resumeData.experience}
+              onSave={updateExperience}
+            />
+          </TabsContent>
+          <TabsContent value="skills" className="mt-6">
+            <SkillsForm initialData={resumeData.skills} onSave={updateSkills} />
+          </TabsContent>
+          <TabsContent value="preview" className="mt-6">
+            <div className="space-y-4">
+              <TemplateSelector
+                selectedTemplate={selectedTemplate}
+                onTemplateChange={handleTemplateChange}
               />
-            </TabsContent>
-            <TabsContent value="education" className="mt-6">
-              <EducationForm
-                initialData={resumeData.education}
-                onSave={updateEducation}
-              />
-            </TabsContent>
-            <TabsContent value="experience" className="mt-6">
-              <ExperienceForm
-                initialData={resumeData.experience}
-                onSave={updateExperience}
-              />
-            </TabsContent>
-            <TabsContent value="skills" className="mt-6">
-              <SkillsForm
-                initialData={resumeData.skills}
-                onSave={updateSkills}
-              />
-            </TabsContent>
-            <TabsContent value="preview" className="mt-6">
-              <div className="space-y-4">
-                <TemplateSelector
-                  selectedTemplate={selectedTemplate}
-                  onTemplateChange={handleTemplateChange}
-                />
-                <div className="flex justify-end">
-                  <Button onClick={handleExport}>{t("builder.export")}</Button>
-                </div>
-              </div>
-            </TabsContent>
-          </Tabs>
-        </div>
 
-        <div className="bg-card rounded-lg shadow-lg p-6 border">
-          <h2 className="text-xl font-semibold mb-4">
-            {t("builder.livePreview")}
-          </h2>
-          <div className="overflow-auto max-h-[600px]">
-            <div id="resume-preview-export" ref={resumePreviewRef}>
-              <ResumePreview data={resumeData} template={selectedTemplate} />
+              <Card>
+                <CardHeader>
+                  <CardTitle>{t("builder.exportOptions")}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex gap-2">
+                    <Button onClick={handleExport} variant="outline">
+                      {t("builder.export")}
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
             </div>
-          </div>
-        </div>
+          </TabsContent>
+        </Tabs>
       </div>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>{t("builder.livePreview")}</CardTitle>
+        </CardHeader>
+        <CardContent className="p-6">
+          <div className="border rounded-lg px-10 py-14 bg-white text-black shadow-sm">
+            <ResumePreview data={resumeData} template={selectedTemplate} />
+          </div>
+        </CardContent>
+      </Card>
 
       <Dialog open={saveDialogOpen} onOpenChange={setSaveDialogOpen}>
         <DialogContent>

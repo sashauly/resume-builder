@@ -1,8 +1,13 @@
+"use client";
+
 import type { ResumeData } from "./resume-builder";
 import { ClassicTemplate } from "./templates/classic-template";
 import { ModernTemplate } from "./templates/modern-template";
 import { ProfessionalTemplate } from "./templates/professional-template";
 import { CompactTemplate } from "./templates/compact-template";
+import { Button } from "./ui/button";
+import { useRef } from "react";
+import { toast } from "sonner";
 
 interface ResumePreviewProps {
   data: ResumeData;
@@ -11,8 +16,9 @@ interface ResumePreviewProps {
 
 export function ResumePreview({
   data,
-  template = "classic",
+  template = "compact",
 }: ResumePreviewProps) {
+  const resumeRef = useRef<HTMLDivElement>(null);
   const { personalInfo, education, experience, skills } = data;
 
   const hasPersonalInfo =
@@ -29,15 +35,23 @@ export function ResumePreview({
     );
   }
 
-  switch (template) {
-    case "modern":
-      return <ModernTemplate data={data} />;
-    case "professional":
-      return <ProfessionalTemplate data={data} />;
-    case "compact":
-      return <CompactTemplate data={data} />;
-    case "classic":
-    default:
-      return <ClassicTemplate data={data} />;
-  }
+  const renderTemplate = () => {
+    switch (template) {
+      case "modern":
+        return <ModernTemplate data={data} />;
+      case "professional":
+        return <ProfessionalTemplate data={data} />;
+      case "compact":
+        return <CompactTemplate data={data} />;
+      case "classic":
+      default:
+        return <ClassicTemplate data={data} />;
+    }
+  };
+
+  return (
+    <div id="resume-preview-export" ref={resumeRef}>
+      {renderTemplate()}
+    </div>
+  );
 }

@@ -16,7 +16,8 @@ import { FileText, Plus, Edit, Trash2, Eye, Download } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { ResumePreview } from "@/components/resume-preview";
-import { ExportDialog } from "@/components/export-dialog";
+import { ExportDialog } from "@/components/export/export-dialog";
+import { PDFExporter } from "@/components/export/pdf-exporter";
 import type { ResumeData } from "@/components/resume-builder";
 import {
   AlertDialog,
@@ -243,19 +244,61 @@ export function HomeContent() {
       </Dialog>
 
       {exportResume && (
-        <ExportDialog
-          open={!!exportResume}
-          onOpenChange={(open) => !open && setExportResume(null)}
-          resumeData={exportResume.data}
-          template={
-            exportResume.template as
-              | "classic"
-              | "modern"
-              | "professional"
-              | "compact"
-          }
-          resumeName={exportResume.name}
-        />
+        <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-lg p-6 max-w-4xl w-full max-h-[90vh] overflow-auto">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-semibold">
+                Export {exportResume.name}
+              </h2>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setExportResume(null)}
+              >
+                ×
+              </Button>
+            </div>
+
+            <div className="mb-6">
+              <div
+                id={`export-content-${exportResume.id}`}
+                className="border rounded-lg p-4 bg-white"
+              >
+                <ResumePreview
+                  data={exportResume.data}
+                  template={
+                    exportResume.template as
+                      | "classic"
+                      | "modern"
+                      | "professional"
+                      | "compact"
+                  }
+                />
+              </div>
+            </div>
+
+            <ExportDialog
+              open={!!exportResume}
+              onOpenChange={(open) => !open && setExportResume(null)}
+              resumeData={exportResume.data}
+              template={
+                exportResume.template as
+                  | "classic"
+                  | "modern"
+                  | "professional"
+                  | "compact"
+              }
+              resumeName={exportResume.name}
+            />
+
+            <PDFExporter
+              contentId={`export-content-${exportResume.id}`}
+              filename={`${exportResume.name}.pdf`}
+              isGenerating={false}
+              setIsGenerating={() => {}}
+            />
+          </div>
+        </div>
       )}
     </div>
   );

@@ -1,12 +1,17 @@
-"use client"
+"use client";
 
-import { Globe } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { useLocale } from "@/hooks/use-locale"
+import { Globe } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useLocale } from "@/hooks/use-locale";
 
 export function LocaleToggle() {
-  const { locale, setLocale } = useLocale()
+  const { locale, setLocale } = useLocale();
 
   return (
     <DropdownMenu>
@@ -27,5 +32,5 @@ export function LocaleToggle() {
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
-  )
+  );
 }

@@ -1,23 +1,36 @@
-"use client"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useFieldArray, useForm } from "react-hook-form"
-import * as z from "zod"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { Plus, Trash2 } from "lucide-react"
-import type { ResumeData } from "./resume-builder"
-import { useTranslation } from "@/hooks/use-translation"
+"use client";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useFieldArray, useForm } from "react-hook-form";
+import * as z from "zod";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Plus, Trash2 } from "lucide-react";
+import type { ResumeData } from "../resume-builder";
+import { useTranslation } from "@/hooks/use-translation";
 
 interface EducationFormProps {
-  initialData: ResumeData["education"]
-  onSave: (data: ResumeData["education"]) => void
+  initialData: ResumeData["education"];
+  onSave: (data: ResumeData["education"]) => void;
 }
 
 export function EducationForm({ initialData, onSave }: EducationFormProps) {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
 
   const educationItemSchema = z.object({
     institution: z.string().min(1, t("education.institutionRequired")),
@@ -26,11 +39,11 @@ export function EducationForm({ initialData, onSave }: EducationFormProps) {
     startDate: z.string().min(1, t("education.startDateRequired")),
     endDate: z.string().optional(),
     description: z.string().optional(),
-  })
+  });
 
   const formSchema = z.object({
     education: z.array(educationItemSchema).min(1, t("education.minOneEntry")),
-  })
+  });
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -48,15 +61,15 @@ export function EducationForm({ initialData, onSave }: EducationFormProps) {
             },
           ],
     },
-  })
+  });
 
   const { fields, append, remove } = useFieldArray({
     control: form.control,
     name: "education",
-  })
+  });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    onSave(values.education)
+    onSave(values.education);
   }
 
   return (
@@ -69,7 +82,10 @@ export function EducationForm({ initialData, onSave }: EducationFormProps) {
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             {fields.map((field, index) => (
-              <div key={field.id} className="space-y-4 p-4 border rounded-md relative">
+              <div
+                key={field.id}
+                className="space-y-4 p-4 border rounded-md relative"
+              >
                 {index > 0 && (
                   <Button
                     type="button"
@@ -79,7 +95,9 @@ export function EducationForm({ initialData, onSave }: EducationFormProps) {
                     onClick={() => remove(index)}
                   >
                     <Trash2 className="h-4 w-4" />
-                    <span className="sr-only">{t("education.removeEducation")}</span>
+                    <span className="sr-only">
+                      {t("education.removeEducation")}
+                    </span>
                   </Button>
                 )}
 
@@ -89,10 +107,14 @@ export function EducationForm({ initialData, onSave }: EducationFormProps) {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>
-                        {t("education.institution")} <span className="text-red-500">*</span>
+                        {t("education.institution")}{" "}
+                        <span className="text-red-500">*</span>
                       </FormLabel>
                       <FormControl>
-                        <Input placeholder={t("education.institutionPlaceholder")} {...field} />
+                        <Input
+                          placeholder={t("education.institutionPlaceholder")}
+                          {...field}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -105,10 +127,14 @@ export function EducationForm({ initialData, onSave }: EducationFormProps) {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>
-                        {t("education.degree")} <span className="text-red-500">*</span>
+                        {t("education.degree")}{" "}
+                        <span className="text-red-500">*</span>
                       </FormLabel>
                       <FormControl>
-                        <Input placeholder={t("education.degreePlaceholder")} {...field} />
+                        <Input
+                          placeholder={t("education.degreePlaceholder")}
+                          {...field}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -124,7 +150,10 @@ export function EducationForm({ initialData, onSave }: EducationFormProps) {
                         {t("education.fieldOfStudy")} ({t("common.optional")})
                       </FormLabel>
                       <FormControl>
-                        <Input placeholder={t("education.fieldOfStudyPlaceholder")} {...field} />
+                        <Input
+                          placeholder={t("education.fieldOfStudyPlaceholder")}
+                          {...field}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -138,10 +167,14 @@ export function EducationForm({ initialData, onSave }: EducationFormProps) {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>
-                          {t("education.startDate")} <span className="text-red-500">*</span>
+                          {t("education.startDate")}{" "}
+                          <span className="text-red-500">*</span>
                         </FormLabel>
                         <FormControl>
-                          <Input placeholder={t("education.startDatePlaceholder")} {...field} />
+                          <Input
+                            placeholder={t("education.startDatePlaceholder")}
+                            {...field}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -155,7 +188,10 @@ export function EducationForm({ initialData, onSave }: EducationFormProps) {
                       <FormItem>
                         <FormLabel>{t("education.endDate")}</FormLabel>
                         <FormControl>
-                          <Input placeholder={t("education.endDatePlaceholder")} {...field} />
+                          <Input
+                            placeholder={t("education.endDatePlaceholder")}
+                            {...field}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -212,5 +248,5 @@ export function EducationForm({ initialData, onSave }: EducationFormProps) {
         </Form>
       </CardContent>
     </Card>
-  )
+  );
 }

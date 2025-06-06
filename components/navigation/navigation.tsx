@@ -1,21 +1,21 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { usePathname } from "next/navigation"
-import { ThemeToggle } from "@/components/theme-toggle"
-import { LocaleToggle } from "@/components/locale-toggle"
-import { useTranslation } from "@/hooks/use-translation"
-import { FileText } from "lucide-react"
-import { useMobile } from "@/hooks/use-mobile"
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { ThemeToggle } from "@/components/theme/theme-toggle";
+import { LocaleToggle } from "@/components/locale/locale-toggle";
+import { useTranslation } from "@/hooks/use-translation";
+import { FileText } from "lucide-react";
+import { useMobile } from "@/hooks/use-mobile";
 
 export function Navigation() {
-  const pathname = usePathname()
-  const { t } = useTranslation()
-  const isMobile = useMobile()
+  const pathname = usePathname();
+  const { t } = useTranslation();
+  const isMobile = useMobile();
 
   // Hide on mobile as we'll use bottom navigation instead
   if (isMobile) {
-    return null
+    return null;
   }
 
   return (
@@ -30,7 +30,9 @@ export function Navigation() {
             <Link
               href="/"
               className={`text-sm font-medium transition-colors ${
-                pathname === "/" ? "text-foreground" : "text-muted-foreground hover:text-foreground"
+                pathname === "/"
+                  ? "text-foreground"
+                  : "text-muted-foreground hover:text-foreground"
               }`}
             >
               {t("nav.home")}
@@ -38,7 +40,9 @@ export function Navigation() {
             <Link
               href="/builder"
               className={`text-sm font-medium transition-colors ${
-                pathname === "/builder" ? "text-foreground" : "text-muted-foreground hover:text-foreground"
+                pathname === "/builder"
+                  ? "text-foreground"
+                  : "text-muted-foreground hover:text-foreground"
               }`}
             >
               {t("nav.builder")}
@@ -46,7 +50,9 @@ export function Navigation() {
             <Link
               href="/settings"
               className={`text-sm font-medium transition-colors ${
-                pathname === "/settings" ? "text-foreground" : "text-muted-foreground hover:text-foreground"
+                pathname === "/settings"
+                  ? "text-foreground"
+                  : "text-muted-foreground hover:text-foreground"
               }`}
             >
               {t("nav.settings")}
@@ -59,5 +65,5 @@ export function Navigation() {
         </div>
       </div>
     </header>
-  )
+  );
 }
