@@ -61,9 +61,9 @@ export function ExportDialog({
       // You might want to keep some specific classes for styling if they are generic.
       // For a truly clean HTML, removing all utility classes and relying on base styles is best.
       // For now, let's remove most common dynamic/framework classes.
-      element.removeAttribute("class");
+      // element.removeAttribute("class");
       element.removeAttribute("data-testid");
-      element.removeAttribute("style"); // Remove inline styles as we will apply base styles
+      // element.removeAttribute("style"); // Remove inline styles as we will apply base styles
     });
 
     // Optionally, you might want to replace specific components' HTML with simpler structures

@@ -52,40 +52,86 @@ export function CompactTemplate({ data }: CompactTemplateProps) {
       data-testid="compact-template"
     >
       {/* Header */}
-      <header className="flex gap-4 mb-4">
-        <div style={{ width: "70%" }} className="flex gap-2">
+      <header
+        style={{
+          display: "flex",
+          gap: "1rem",
+          marginBottom: "1rem",
+        }}
+      >
+        <div style={{ width: "70%", display: "flex", gap: "0.5rem" }}>
           {personalInfo.photo ? (
             <img
               src={personalInfo.photo || "/placeholder.svg"}
               alt={t("personalInfo.photo")}
-              className="w-32 h-32 object-cover rounded"
-              style={{ width: "125px", height: "125px" }}
+              style={{
+                width: "125px",
+                height: "125px",
+                objectFit: "cover",
+                borderRadius: "0.25rem",
+              }}
             />
           ) : (
-            <div className="w-32 h-32 bg-gray-200 rounded flex items-center justify-center">
-              <span className="text-gray-500 text-sm">
+            <div
+              style={{
+                width: "125px",
+                height: "125px",
+                backgroundColor: "#e5e7eb",
+                borderRadius: "0.25rem",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <span style={{ color: "#6b7280", fontSize: "0.875rem" }}>
                 {t("personalInfo.photo")}
               </span>
             </div>
           )}
           <div>
-            <h1 className="text-2xl font-bold mb-1">
+            <h1
+              style={{
+                fontSize: "1.5rem",
+                fontWeight: "bold",
+                margin: "0",
+              }}
+            >
               {personalInfo.name || "Your Name"}
             </h1>
-            <h2 className="text-xl text-gray-700">
+            <h2 style={{ fontSize: "1.25rem", color: "#4b5563" }}>
               {personalInfo.jobTitle || "Job Title"}
             </h2>
           </div>
         </div>
-        <div style={{ width: "30%" }} className="flex flex-col gap-2">
+        <div
+          style={{
+            width: "30%",
+            display: "flex",
+            flexDirection: "column",
+            gap: "0.5rem",
+          }}
+        >
           <section>
-            <ul className="list-none p-0 space-y-1 text-sm">
+            <ul
+              style={{
+                listStyle: "none",
+                padding: "0",
+                listStyleType: "none",
+                marginTop: "0",
+                marginBottom: "0",
+                lineHeight: "1.25",
+                fontSize: "0.875rem",
+                display: "flex",
+                flexDirection: "column",
+                gap: "0.25rem",
+              }}
+            >
               {personalInfo.address && <li>{personalInfo.address}</li>}
               {personalInfo.email && (
                 <li>
                   <a
                     href={`mailto:${personalInfo.email}`}
-                    className="text-blue-600 hover:underline"
+                    style={{ color: "#2563eb", textDecoration: "none" }}
                   >
                     {personalInfo.email}
                   </a>
@@ -95,7 +141,7 @@ export function CompactTemplate({ data }: CompactTemplateProps) {
                 <li>
                   <a
                     href={`tel:${personalInfo.phone}`}
-                    className="text-blue-600 hover:underline"
+                    style={{ color: "#2563eb", textDecoration: "none" }}
                   >
                     {personalInfo.phone}
                   </a>
@@ -106,12 +152,14 @@ export function CompactTemplate({ data }: CompactTemplateProps) {
                   const Icon = getSocialIcon(link.platform);
                   return (
                     <li key={index}>
-                      <span className="capitalize">{link.platform}:</span>{" "}
+                      <span style={{ textTransform: "capitalize" }}>
+                        {link.platform}:
+                      </span>{" "}
                       <a
                         href={getSocialUrl(link.platform, link.username)}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-blue-600 hover:underline"
+                        style={{ color: "#2563eb", textDecoration: "none" }}
                       >
                         {link.username}
                       </a>
@@ -124,17 +172,30 @@ export function CompactTemplate({ data }: CompactTemplateProps) {
       </header>
 
       {/* Main Content */}
-      <main className="flex gap-6 w-full h-full">
+      <main
+        style={{
+          display: "flex",
+          gap: "1.5rem",
+          width: "100%",
+          height: "100%",
+        }}
+      >
         <div style={{ width: "70%" }}>
           {/* Summary */}
           {personalInfo.summary && (
-            <section className="mb-6">
-              <h3 className="text-lg font-bold mb-3">
+            <section style={{ marginBottom: "1.5rem" }}>
+              <h3
+                style={{
+                  fontSize: "1.125rem",
+                  fontWeight: "bold",
+                  marginBottom: "0",
+                }}
+              >
                 {t("personalInfo.aboutMe")}
               </h3>
-              <div className="text-sm">
+              <div style={{ fontSize: "0.875rem" }}>
                 {personalInfo.summary.split("\n").map((paragraph, index) => (
-                  <p key={index} className="mb-2">
+                  <p key={index} style={{ marginBottom: "0.5rem" }}>
                     {paragraph}
                   </p>
                 ))}
@@ -144,17 +205,37 @@ export function CompactTemplate({ data }: CompactTemplateProps) {
 
           {/* Experience */}
           {experience.some((exp) => exp.company || exp.position) && (
-            <section className="mb-6">
-              <h3 className="text-lg font-bold mb-3">
+            <section style={{ marginBottom: "1.5rem" }}>
+              <h3
+                style={{
+                  fontSize: "1.125rem",
+                  fontWeight: "bold",
+                  marginBottom: "0",
+                }}
+              >
                 {t("experience.title")}
               </h3>
-              <ul className="list-none p-0 pl-4 space-y-6">
+              <ul
+                style={{
+                  listStyle: "none",
+                  padding: "0",
+                  paddingLeft: "1rem",
+                  listStyleType: "none",
+                  marginTop: "0",
+                  marginBottom: "0",
+                  lineHeight: "1.5",
+                  display: "flex",
+                  flexDirection: "column",
+                }}
+              >
                 {experience.map((exp, index) => (
                   <li
                     key={index}
-                    className={exp.company || exp.position ? "" : "hidden"}
+                    style={{
+                      display: exp.company || exp.position ? "block" : "none",
+                    }}
                   >
-                    <h4 className="font-bold mb-1">
+                    <h4 style={{ fontWeight: "bold", marginBottom: "0.5rem" }}>
                       {exp.company || t("experience.company")},{" "}
                       {exp.location && exp.location !== "" && (
                         <>
@@ -164,44 +245,73 @@ export function CompactTemplate({ data }: CompactTemplateProps) {
                       )}
                       {exp.position || t("experience.position")}
                     </h4>
-                    <p className="text-sm mb-2 font-medium">
+                    <p
+                      style={{
+                        fontSize: "0.875rem",
+                        marginBottom: "0.5rem",
+                        fontWeight: "500",
+                      }}
+                    >
                       {exp.startDate} –{" "}
                       {exp.current ? t("experience.present") : exp.endDate}
                     </p>
                     {exp.description && exp.description !== "" && (
-                      <div className="text-sm leading-relaxed">
+                      <div
+                        style={{
+                          fontSize: "0.875rem",
+                          lineHeight: "1.625",
+                        }}
+                      >
                         {exp.description.split("\n").map((line, i) => (
-                          <p key={i} className="mb-1">
+                          <p key={i} style={{ marginBottom: "0.25rem" }}>
                             {line}
                           </p>
                         ))}
                       </div>
                     )}
                     {exp.achievements && (
-                      <div className="mt-2">
-                        <h5 className="font-bold text-sm mb-1">
+                      <div style={{ marginTop: "0.5rem" }}>
+                        <h5
+                          style={{
+                            fontWeight: "bold",
+                            fontSize: "0.875rem",
+                            margin: "0.25rem 0",
+                          }}
+                        >
                           {t("experience.achievements")}:
                         </h5>
-                        <ul className="text-sm leading-relaxed align-baseline ml-4">
+                        <ul
+                          style={{
+                            fontSize: "0.875rem",
+                            lineHeight: "1.625",
+                            listStyleType: "disc",
+                            marginLeft: "1rem",
+                            paddingLeft: "0",
+                            marginBottom: "0",
+                          }}
+                        >
                           {exp.achievements
                             .split("\n")
                             .filter((line) => line.trim())
                             .map((achievement, i) => (
-                              <li key={i}>
-                                <span>• </span>
-                                {achievement.trim()}
-                              </li>
+                              <li key={i}>{achievement.trim()}</li>
                             ))}
                         </ul>
                       </div>
                     )}
 
                     {exp.techStack && (
-                      <div className="mt-2">
-                        <h5 className="font-bold text-sm mb-1">
+                      <div style={{ marginTop: "0.5rem" }}>
+                        <h5
+                          style={{
+                            fontWeight: "bold",
+                            fontSize: "0.875rem",
+                            margin: "0.25rem 0",
+                          }}
+                        >
                           {t("experience.techStack")}:
                         </h5>
-                        <p className="text-sm">{exp.techStack}</p>
+                        <p style={{ fontSize: "0.875rem" }}>{exp.techStack}</p>
                       </div>
                     )}
                   </li>
@@ -215,12 +325,30 @@ export function CompactTemplate({ data }: CompactTemplateProps) {
         <div style={{ width: "30%" }}>
           {/* Skills */}
           {skills.length > 0 && (
-            <section className="mb-6">
-              <h3 className="text-lg font-bold mb-3">{t("skills.title")}</h3>
-              <ul className="align-baseline p-0 space-y-1">
+            <section style={{ marginBottom: "1.5rem" }}>
+              <h3
+                style={{
+                  fontSize: "1.125rem",
+                  fontWeight: "bold",
+                  marginBottom: "0",
+                }}
+              >
+                {t("skills.title")}
+              </h3>
+              <ul
+                style={{
+                  listStyleType: "disc",
+                  padding: "0",
+                  lineHeight: "1.25",
+                  marginTop: "0",
+                  marginBottom: "0",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "0.25rem",
+                }}
+              >
                 {skills.map((skill, index) => (
-                  <li key={index} className="text-sm">
-                    <span>• </span>
+                  <li key={index} style={{ fontSize: "0.875rem" }}>
                     {skill}
                   </li>
                 ))}
@@ -230,29 +358,50 @@ export function CompactTemplate({ data }: CompactTemplateProps) {
 
           {/* Education */}
           {education.some((edu) => edu.institution || edu.degree) && (
-            <section className="mb-6">
-              <h3 className="text-lg font-bold mb-3">{t("education.title")}</h3>
-              <ul className="list-none p-0 space-y-4">
+            <section style={{ marginBottom: "1.5rem" }}>
+              <h3
+                style={{
+                  fontSize: "1.125rem",
+                  fontWeight: "bold",
+                  marginBottom: "0",
+                }}
+              >
+                {t("education.title")}
+              </h3>
+              <ul
+                style={{
+                  listStyle: "none",
+                  padding: "0",
+                  listStyleType: "none",
+                  marginTop: "0",
+                  marginBottom: "0",
+                  lineHeight: "1.25",
+                }}
+              >
                 {education.map((edu, index) => (
                   <li
                     key={index}
-                    className={
-                      edu.institution || edu.degree ? "text-sm" : "hidden"
-                    }
+                    style={{
+                      marginBottom: "1rem",
+                      fontSize: "0.875rem",
+                      display: edu.institution || edu.degree ? "block" : "none",
+                    }}
                   >
-                    <h4 className="font-bold">
+                    <h4 style={{ fontWeight: "bold", marginBottom: "0.5rem" }}>
                       {edu.institution || t("education.institution")},{" "}
                       {edu.degree || t("education.degree")}
                       {edu.fieldOfStudy ? ` in ${edu.fieldOfStudy}` : ""}
                     </h4>
                     {edu.startDate && (
-                      <p className="text-sm">
+                      <p style={{ fontSize: "0.875rem" }}>
                         {edu.startDate} –{" "}
                         {edu.endDate || t("experience.present")}
                       </p>
                     )}
                     {edu.description && (
-                      <p className="text-sm mt-1">{edu.description}</p>
+                      <p style={{ fontSize: "0.875rem", marginTop: "0.25rem" }}>
+                        {edu.description}
+                      </p>
                     )}
                   </li>
                 ))}

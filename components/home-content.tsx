@@ -224,7 +224,7 @@ export function HomeContent() {
               </Button>
             </DialogDescription>
           </DialogHeader>
-          <div className="border rounded-md bg-white">
+          <div className="border rounded-md bg-white text-black">
             {previewResume && (
               <div id="resume-preview-export">
                 <ResumePreview
@@ -289,13 +289,6 @@ export function HomeContent() {
                   | "compact"
               }
               resumeName={exportResume.name}
-            />
-
-            <PDFExporter
-              contentId={`export-content-${exportResume.id}`}
-              filename={`${exportResume.name}.pdf`}
-              isGenerating={false}
-              setIsGenerating={() => {}}
             />
           </div>
         </div>
