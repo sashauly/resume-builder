@@ -352,7 +352,7 @@ export function ResumeBuilder() {
             <CardTitle>{t('builder.livePreview')}</CardTitle>
           </CardHeader>
           <CardContent className='p-6'>
-            <div className='rounded-lg border bg-white px-10 py-14 text-black shadow-sm'>
+            <div className='rounded-lg border bg-white px-10 py-14 text-black shadow-xs'>
               <ResumePreview data={resumeData} template={selectedTemplate} />
             </div>
           </CardContent>
