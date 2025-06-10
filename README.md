@@ -18,7 +18,7 @@ To get started, follow these steps:
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/johndoe/resume-builder.git
+git clone https://github.com/sashauly/resume-builder.git
 ```
 
 2. Install the dependencies:
