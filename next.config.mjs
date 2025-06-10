@@ -18,22 +18,31 @@ if (isProd) {
 }
 
 const nextConfig = withPWA({
-  reactStrictMode: false,
-  swcMinify: true,
-  output: 'export',
+  // reactStrictMode: false,
+  // swcMinify: true,
+  // output: 'export',
+  // basePath: '/resume-builder',
+  // assetPrefix: '/resume-builder/',
+  // disable: process.env.NODE_ENV === 'development',
+  // register: true,
+  // skipWaiting: true,
+  // eslint: {
+  //   ignoreDuringBuilds: true,
+  // },
+  // typescript: {
+  //   ignoreBuildErrors: true,
+  // },
+  // images: {
+  //   unoptimized: true,
+  // },
   basePath: '/resume-builder',
-  assetPrefix: '/resume-builder/',
-  disable: process.env.NODE_ENV === 'development',
-  register: true,
-  skipWaiting: true,
+  output: 'export',
+  reactStrictMode: true,
   eslint: {
     ignoreDuringBuilds: true,
   },
   typescript: {
     ignoreBuildErrors: true,
-  },
-  images: {
-    unoptimized: true,
   },
 });
 
