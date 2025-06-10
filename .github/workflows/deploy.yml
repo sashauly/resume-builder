@@ -46,8 +46,7 @@ jobs:
       - name: Setup Pages
         id: setup_pages
         uses: actions/configure-pages@v5
-        with:
-          static_site_generator: next
+
       - name: Dump Pages configuration
         run: |
           echo PAGES_BASE_URL:  ${{ steps.pages.outputs.base_url }}
