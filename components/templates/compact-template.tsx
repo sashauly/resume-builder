@@ -3,28 +3,10 @@
 import { useTranslation } from '@/hooks/use-translation';
 import type { ResumeData } from '../resume-builder';
 import Image from 'next/image';
-// import { Github, Send, Linkedin, Twitter, Globe } from 'lucide-react';
 
 interface CompactTemplateProps {
   data: ResumeData;
 }
-
-// const getSocialIcon = (platform: string) => {
-//   switch (platform) {
-//     case 'github':
-//       return Github;
-//     case 'telegram':
-//       return Send;
-//     case 'linkedin':
-//       return Linkedin;
-//     case 'twitter':
-//       return Twitter;
-//     case 'website':
-//       return Globe;
-//     default:
-//       return Globe;
-//   }
-// };
 
 const getSocialUrl = (platform: string, username: string) => {
   switch (platform) {
@@ -152,7 +134,6 @@ export function CompactTemplate({ data }: CompactTemplateProps) {
               )}
               {personalInfo.socialLinks &&
                 personalInfo.socialLinks.map((link, index) => {
-                  // const Icon = getSocialIcon(link.platform);
                   return (
                     <li key={index}>
                       <span style={{ textTransform: 'capitalize' }}>

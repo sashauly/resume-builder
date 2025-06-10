@@ -12,13 +12,10 @@ export function useMobile() {
       setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);
     };
 
-    // Initial check
     checkIfMobile();
 
-    // Add event listener
     window.addEventListener('resize', checkIfMobile);
 
-    // Clean up
     return () => window.removeEventListener('resize', checkIfMobile);
   }, []);
 

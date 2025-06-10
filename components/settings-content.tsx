@@ -21,7 +21,6 @@ export function SettingsContent() {
   const { locale, setLocale } = useLocale();
   const [mounted, setMounted] = useState(false);
 
-  // Avoid hydration mismatch
   useEffect(() => {
     setMounted(true);
   }, []);

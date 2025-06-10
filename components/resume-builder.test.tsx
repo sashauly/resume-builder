@@ -11,7 +11,6 @@ import { SkillsFormProps } from './form/skills-form';
 import { ResumePreviewProps } from './resume-preview';
 import { TemplateSelectorProps } from './template-selector';
 
-// Mock the hooks and components
 vi.mock('next/navigation', async () => {
   const actual = await vi.importActual('next/navigation');
   return {
@@ -23,11 +22,10 @@ vi.mock('next/navigation', async () => {
 
 vi.mock('@/hooks/use-translation', () => ({
   useTranslation: () => ({
-    t: (key: string) => key, // Simply return the key for testing
+    t: (key: string) => key,
   }),
 }));
 
-// Mock the form components
 vi.mock('@/components/form/personal-info-form', () => ({
   PersonalInfoForm: ({ initialData, onSave }: PersonalInfoFormProps) => (
     <div data-testid='personal-info-form'>
@@ -119,7 +117,6 @@ vi.mock('sonner', () => ({
 }));
 
 describe('ResumeBuilder', () => {
-  // Setup localStorage mock
   const localStorageMock = (() => {
     let store: Record<string, string> = {};
 
@@ -135,13 +132,11 @@ describe('ResumeBuilder', () => {
   })();
 
   beforeEach(() => {
-    // Setup localStorage mock
     Object.defineProperty(window, 'localStorage', {
       value: localStorageMock,
     });
     localStorageMock.clear();
 
-    // Reset router mock
     mockRouter.push.mockReset();
   });
 
@@ -169,7 +164,6 @@ describe('ResumeBuilder', () => {
       screen.getByRole('tab', { name: 'builder.preview' }),
     ).toBeInTheDocument();
 
-    // Personal info form should be visible by default
     expect(screen.getByTestId('personal-info-form')).toBeInTheDocument();
   });
 
@@ -177,25 +171,19 @@ describe('ResumeBuilder', () => {
     render(<ResumeBuilder />);
     const user = userEvent.setup();
 
-    // Start with personal info
     expect(screen.getByTestId('personal-info-form')).toBeInTheDocument();
 
-    // Save personal info, should advance to education
     await user.click(screen.getByTestId('save-personal-info'));
     expect(screen.getByTestId('education-form')).toBeInTheDocument();
 
-    // Save education, should advance to experience
     await user.click(screen.getByTestId('save-education'));
     expect(screen.getByTestId('experience-form')).toBeInTheDocument();
 
-    // Save experience, should advance to skills
     await user.click(screen.getByTestId('save-experience'));
     expect(screen.getByTestId('skills-form')).toBeInTheDocument();
 
-    // Save skills, should advance to preview
     await user.click(screen.getByTestId('save-skills'));
 
-    // Preview tab should show template selector and export options
     expect(screen.getByTestId('template-selector')).toBeInTheDocument();
   });
 
@@ -203,26 +191,20 @@ describe('ResumeBuilder', () => {
     render(<ResumeBuilder />);
     const user = userEvent.setup();
 
-    // Start with personal info
     expect(screen.getByTestId('personal-info-form')).toBeInTheDocument();
 
-    // Switch to education tab
     await user.click(screen.getByRole('tab', { name: 'builder.education' }));
     expect(screen.getByTestId('education-form')).toBeInTheDocument();
 
-    // Switch to experience tab
     await user.click(screen.getByRole('tab', { name: 'builder.experience' }));
     expect(screen.getByTestId('experience-form')).toBeInTheDocument();
 
-    // Switch to skills tab
     await user.click(screen.getByRole('tab', { name: 'builder.skills' }));
     expect(screen.getByTestId('skills-form')).toBeInTheDocument();
 
-    // Switch to preview tab
     await user.click(screen.getByRole('tab', { name: 'builder.preview' }));
     expect(screen.getByTestId('template-selector')).toBeInTheDocument();
 
-    // Go back to personal info
     await user.click(screen.getByRole('tab', { name: 'builder.personal' }));
     expect(screen.getByTestId('personal-info-form')).toBeInTheDocument();
   });
@@ -231,19 +213,14 @@ describe('ResumeBuilder', () => {
     render(<ResumeBuilder />);
     const user = userEvent.setup();
 
-    // Save personal info with name "John Doe"
     await user.click(screen.getByTestId('save-personal-info'));
 
-    // Save education with Test University
     await user.click(screen.getByTestId('save-education'));
 
-    // Save experience with Test Company
     await user.click(screen.getByTestId('save-experience'));
 
-    // Save skills with JavaScript and React
     await user.click(screen.getByTestId('save-skills'));
 
-    // Check if the preview reflects the updated data
     expect(screen.getByTestId('preview-name')).toHaveTextContent('John Doe');
   });
 
@@ -251,13 +228,10 @@ describe('ResumeBuilder', () => {
     render(<ResumeBuilder />);
     const user = userEvent.setup();
 
-    // Go to preview tab
     await user.click(screen.getByRole('tab', { name: 'builder.preview' }));
 
-    // Change template to modern
     await user.click(screen.getByTestId('change-template'));
 
-    // Check if template was updated in preview
     expect(screen.getByTestId('preview-template')).toHaveTextContent('modern');
   });
 
@@ -265,10 +239,8 @@ describe('ResumeBuilder', () => {
     render(<ResumeBuilder />);
     const user = userEvent.setup();
 
-    // Click save button
     await user.click(screen.getByRole('button', { name: 'builder.save' }));
 
-    // Check if save dialog is open using more specific selectors
     expect(screen.getByRole('dialog')).toBeInTheDocument();
     expect(
       screen.getByRole('heading', { name: 'builder.saveAs' }),
@@ -279,23 +251,18 @@ describe('ResumeBuilder', () => {
     render(<ResumeBuilder />);
     const user = userEvent.setup();
 
-    // Click save button to open dialog
     await user.click(screen.getByRole('button', { name: 'builder.save' }));
 
-    // Enter resume name - use ID selector to be more specific
     const inputField = screen.getByLabelText('builder.resumeName');
     await user.type(inputField, 'My Test Resume');
 
-    // Click save button in dialog - be more specific
     await user.click(screen.getByRole('button', { name: 'common.save' }));
 
-    // Check if localStorage was updated
     expect(localStorageMock.setItem).toHaveBeenCalledWith(
       'savedResumes',
       expect.stringContaining('My Test Resume'),
     );
 
-    // Check if router redirected to edit URL
     expect(mockRouter.push).toHaveBeenCalledWith(
       expect.stringContaining('/builder?id='),
     );
@@ -305,13 +272,10 @@ describe('ResumeBuilder', () => {
     render(<ResumeBuilder />);
     const user = userEvent.setup();
 
-    // Go to preview tab
     await user.click(screen.getByRole('tab', { name: 'builder.preview' }));
 
-    // Click export button
     await user.click(screen.getByRole('button', { name: 'builder.export' }));
 
-    // Export dialog should be visible
     await waitFor(() => {
       expect(screen.getByTestId('export-dialog')).toBeInTheDocument();
     });

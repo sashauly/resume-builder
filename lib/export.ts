@@ -8,29 +8,16 @@ export interface ExportData {
   exportFormat: 'image' | 'word' | 'html' | 'json';
 }
 
-// Helper function to clean up HTML for export
 const cleanHtmlForExport = (htmlString: string): string => {
-  // Create a temporary div to parse the HTML string
   const parser = new DOMParser();
   const doc = parser.parseFromString(htmlString, 'text/html');
   const bodyContent = doc.body;
 
-  // Remove any specific IDs or highly dynamic classes that might interfere
-  // with standalone usage or increase file size unnecessarily.
-  // This is a basic example; you might need more sophisticated cleaning.
   bodyContent.querySelectorAll('*').forEach((element) => {
     element.removeAttribute('id');
-    // You might want to keep some specific classes for styling if they are generic.
-    // For a truly clean HTML, removing all utility classes and relying on base styles is best.
-    // For now, let's remove most common dynamic/framework classes.
-    // element.removeAttribute("class");
-    element.removeAttribute('data-testid');
-    // element.removeAttribute("style"); // Remove inline styles as we will apply base styles
-  });
 
-  // Optionally, you might want to replace specific components' HTML with simpler structures
-  // For example, if your Button component renders complex divs, you might replace it with <button>
-  // This part is highly dependent on your component library's output.
+    element.removeAttribute('data-testid');
+  });
 
   return bodyContent.innerHTML;
 };
@@ -49,60 +36,46 @@ export default async function exportResume(exportData: ExportData) {
     return;
   }
 
-  // It's crucial to grab the *actual* rendered element.
-  // The ResumePreview inside the dialog has the id="resume-preview-export"
-  // because we passed it this ID.
   const resumeElement = document.getElementById('resume-preview-export');
 
   if (!resumeElement) {
     throw new Error('Resume element not found for export.');
   }
 
-  // Create a temporary container for export, to ensure consistent rendering
-  // for html2canvas (PDF/Image) and to get clean HTML for HTML export.
   const tempContainer = document.createElement('div');
   tempContainer.style.position = 'absolute';
-  tempContainer.style.left = '-9999px'; // Off-screen
-  tempContainer.style.width = '800px'; // Fixed width for consistent capture
-  tempContainer.style.padding = '20px'; // Maintain some padding
+  tempContainer.style.left = '-9999px';
+  tempContainer.style.width = '800px';
+  tempContainer.style.padding = '20px';
 
-  // Clone the resume element into the temp container.
-  // This is crucial because html2canvas needs an element in the DOM to render.
-  // For HTML export, we also want the rendered HTML from the template.
   const clone = resumeElement.cloneNode(true) as HTMLElement;
 
-  // Ensure any images are loaded before html2canvas runs
   const images = clone.querySelectorAll('img');
   const imageLoadPromises = Array.from(images).map((img) => {
     if (!img.complete) {
       return new Promise((resolve) => {
         img.onload = resolve;
-        img.onerror = resolve; // Resolve even if error
+        img.onerror = resolve;
       });
     }
     return Promise.resolve();
   });
   await Promise.all(imageLoadPromises);
 
-  // Append the clone to the document to allow for styling to apply if any
   document.body.appendChild(tempContainer);
-  tempContainer.appendChild(clone); // Append clone to temp container
+  tempContainer.appendChild(clone);
 
-  // Now, proceed based on export format
   switch (exportFormat) {
     case 'image':
-      // For PDF and Image, use html2canvas to capture the rendered content
       const canvas = await html2canvas(clone, {
-        scale: 2, // Higher scale for better quality
-        useCORS: true, // Important for images from different origins
-        backgroundColor: '#ffffff', // Ensure white background
+        scale: 2,
+        useCORS: true,
+        backgroundColor: '#ffffff',
         logging: false,
       });
 
-      // After canvas creation, remove the temporary container
       document.body.removeChild(tempContainer);
 
-      // "image"
       const link = document.createElement('a');
       link.download = `${resumeName || 'resume'}.png`;
       link.href = canvas.toDataURL('image/png');
@@ -111,11 +84,9 @@ export default async function exportResume(exportData: ExportData) {
       break;
 
     case 'html':
-      // For HTML, get the innerHTML of the cloned element
       const rawTemplateHtml = clone.innerHTML;
       const cleanedHtml = cleanHtmlForExport(rawTemplateHtml);
 
-      // Wrap the cleaned HTML in a full HTML document structure with basic styles
       const fullHtmlContent = `
             <!DOCTYPE html>
             <html lang="${locale}">
@@ -135,18 +106,12 @@ export default async function exportResume(exportData: ExportData) {
       htmlLink.href = URL.createObjectURL(blob);
       htmlLink.download = `${resumeName || 'resume'}.html`;
       htmlLink.click();
-      URL.revokeObjectURL(htmlLink.href); // Clean up the URL object
+      URL.revokeObjectURL(htmlLink.href);
 
-      // Remove the temporary container after HTML export
       document.body.removeChild(tempContainer);
       break;
 
     case 'word':
-      // The .doc export is still a simplified HTML representation.
-      // It's not a full template-based HTML export because Word's rendering
-      // of complex CSS from templates would be highly unpredictable.
-      // We rely on html2canvas for visual fidelity (PDF/Image) or a simple
-      // structured HTML (for Word and raw HTML if the template's HTML is too complex).
       const wordHtmlContent = `
               <!DOCTYPE html>
               <html>

@@ -19,7 +19,6 @@ export function LocaleProvider({ children }: { children: React.ReactNode }) {
     if (savedLocale) {
       setLocaleState(savedLocale);
     } else {
-      // Try to detect browser language
       const browserLang = navigator.language.split('-')[0];
       if (browserLang === 'ru') {
         setLocaleState('ru');

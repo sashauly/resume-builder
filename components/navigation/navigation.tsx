@@ -13,7 +13,6 @@ export function Navigation() {
   const { t } = useTranslation();
   const isMobile = useMobile();
 
-  // Hide on mobile as we'll use bottom navigation instead
   if (isMobile) {
     return null;
   }

@@ -17,7 +17,6 @@ export function ThemeToggle() {
   const { t } = useTranslation();
   const [mounted, setMounted] = useState(false);
 
-  // Avoid hydration mismatch
   useEffect(() => {
     setMounted(true);
   }, []);

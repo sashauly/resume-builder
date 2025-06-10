@@ -4,7 +4,6 @@ import { render, RenderOptions } from '@testing-library/react';
 import React, { ReactElement, ReactNode } from 'react';
 import { vi } from 'vitest';
 
-// Mock router object that simulates Next.js router functionality
 export const mockRouter = {
   push: vi.fn(),
   replace: vi.fn(),
@@ -16,17 +15,14 @@ export const mockRouter = {
   query: {},
 };
 
-// Mock provider for router context if needed
 export function MockRouterProvider({ children }: { children: ReactNode }) {
   return <>{children}</>;
 }
 
-// Helper to create mock search params
 export function createMockSearchParams(params: Record<string, string>) {
   return new URLSearchParams(params);
 }
 
-// Helper to reset all router mocks
 export function resetRouterMocks() {
   mockRouter.push.mockReset();
   mockRouter.replace.mockReset();
@@ -36,19 +32,15 @@ export function resetRouterMocks() {
   mockRouter.refresh.mockReset();
 }
 
-// Mock for server-side rendering checks
 export const mockUseIsSSR = vi.fn().mockReturnValue(false);
 
-// Helper function to simulate router navigation
 export function simulateRouterNavigation(url: string) {
   mockRouter.pathname = url;
 }
 
-// Custom render function with router mock (if you want to extend this later)
 export function renderWithRouter(ui: React.ReactElement) {
   return {
     ui,
-    // Add additional helper methods as needed
   };
 }
 

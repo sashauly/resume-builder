@@ -1,4 +1,3 @@
-// eslint.config.js
 import { FlatCompat } from '@eslint/eslintrc';
 import tailwind from 'eslint-plugin-tailwindcss';
 

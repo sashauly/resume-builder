@@ -1,5 +1,3 @@
-// This is a simple service worker for PWA functionality
-
 const CACHE_NAME = 'resume-builder-v1';
 const urlsToCache = [
   '/',
@@ -20,7 +18,6 @@ self.addEventListener('install', (event) => {
 self.addEventListener('fetch', (event) => {
   event.respondWith(
     caches.match(event.request).then((response) => {
-      // Cache hit - return response
       if (response) {
         return response;
       }

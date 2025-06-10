@@ -11,7 +11,6 @@ export function MobileNavigation() {
   const { t } = useTranslation();
   const isMobile = useMobile();
 
-  // Only show on mobile
   if (!isMobile) {
     return null;
   }
