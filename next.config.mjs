@@ -5,7 +5,7 @@ const withPWA = withPWAInit({
   dest: 'public',
 });
 
-const BASE_PATH = process.env.BASE_PATH || '/resume-builder/';
+const BASE_PATH = process.env.BASE_PATH || '/resume-builder';
 
 const isProd = process.env.NODE_ENV === 'production';
 
