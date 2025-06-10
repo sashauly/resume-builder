@@ -94,7 +94,7 @@ vi.mock('@/components/resume-preview', () => ({
 vi.mock('@/components/template-selector', () => ({
   TemplateSelector: ({
     selectedTemplate = 'modern',
-    onTemplateChange,
+    onTemplateChangeAction: onTemplateChange,
   }: TemplateSelectorProps) => (
     <div data-testid='template-selector'>
       <button
@@ -109,10 +109,6 @@ vi.mock('@/components/template-selector', () => ({
 
 vi.mock('@/components/export/export-dialog', () => ({
   ExportDialog: () => <div data-testid='export-dialog'></div>,
-}));
-
-vi.mock('@/components/export/pdf-exporter', () => ({
-  PDFExporter: () => <button data-testid='pdf-exporter'>Export PDF</button>,
 }));
 
 vi.mock('sonner', () => ({
@@ -201,7 +197,6 @@ describe('ResumeBuilder', () => {
 
     // Preview tab should show template selector and export options
     expect(screen.getByTestId('template-selector')).toBeInTheDocument();
-    expect(screen.getByTestId('pdf-exporter')).toBeInTheDocument();
   });
 
   it('allows users to manually switch between tabs', async () => {

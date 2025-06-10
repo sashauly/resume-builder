@@ -60,6 +60,8 @@ export function ClassicTemplate({ data }: ClassicTemplateProps) {
             <Image
               src={personalInfo.photo || '/placeholder.svg'}
               alt='Profile'
+              width={128}
+              height={128}
               className='mx-auto mb-4 size-32 rounded-full object-cover'
             />
           ) : (

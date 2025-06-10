@@ -273,7 +273,7 @@ export function HomeContent() {
 
             <ExportDialog
               open={!!exportResume}
-              onOpenChange={(open) => !open && setExportResume(null)}
+              onOpenChangeAction={(open) => !open && setExportResume(null)}
               resumeData={exportResume.data}
               template={
                 exportResume.template as

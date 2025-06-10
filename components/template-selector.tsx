@@ -13,14 +13,14 @@ import { useTranslation } from '@/hooks/use-translation';
 
 export interface TemplateSelectorProps {
   selectedTemplate: 'classic' | 'modern' | 'professional' | 'compact';
-  onTemplateChange: (
+  onTemplateChangeAction: (
     template: 'classic' | 'modern' | 'professional' | 'compact',
   ) => void;
 }
 
 export function TemplateSelector({
   selectedTemplate,
-  onTemplateChange,
+  onTemplateChangeAction,
 }: TemplateSelectorProps) {
   const { t } = useTranslation();
 
@@ -34,7 +34,7 @@ export function TemplateSelector({
         <RadioGroup
           value={selectedTemplate}
           onValueChange={(value) =>
-            onTemplateChange(
+            onTemplateChangeAction(
               value as 'classic' | 'modern' | 'professional' | 'compact',
             )
           }
@@ -46,7 +46,7 @@ export function TemplateSelector({
                 <div>
                   <h3 className='font-medium'>{t('templates.classic')}</h3>
                   <p className='text-sm text-muted-foreground'>
-                    Traditional layout with sidebar
+                    {t('templates.classicDescription')}
                   </p>
                 </div>
               </Label>
@@ -57,7 +57,7 @@ export function TemplateSelector({
                 <div>
                   <h3 className='font-medium'>{t('templates.modern')}</h3>
                   <p className='text-sm text-muted-foreground'>
-                    Clean and minimalist design
+                    {t('templates.modernDescription')}
                   </p>
                 </div>
               </Label>
@@ -68,7 +68,7 @@ export function TemplateSelector({
                 <div>
                   <h3 className='font-medium'>{t('templates.professional')}</h3>
                   <p className='text-sm text-muted-foreground'>
-                    Corporate-style layout
+                    {t('templates.professionalDescription')}
                   </p>
                 </div>
               </Label>
@@ -79,7 +79,7 @@ export function TemplateSelector({
                 <div>
                   <h3 className='font-medium'>{t('templates.compact')}</h3>
                   <p className='text-sm text-muted-foreground'>
-                    Detailed layout with photo
+                    {t('templates.compactDescription')}
                   </p>
                 </div>
               </Label>

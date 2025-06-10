@@ -58,6 +58,8 @@ export function ModernTemplate({ data }: ModernTemplateProps) {
           <Image
             src={personalInfo.photo || '/placeholder.svg'}
             alt='Profile'
+            width={132}
+            height={132}
             className='mx-auto mb-4 size-24 rounded-full object-cover'
           />
         )}

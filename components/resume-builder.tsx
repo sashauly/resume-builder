@@ -1,19 +1,13 @@
 'use client';
 
-import { useState, useEffect, useCallback, useMemo } from 'react';
-import { PersonalInfoForm } from '@/components/form/personal-info-form';
 import { EducationForm } from '@/components/form/education-form';
 import { ExperienceForm } from '@/components/form/experience-form';
+import { PersonalInfoForm } from '@/components/form/personal-info-form';
 import { SkillsForm } from '@/components/form/skills-form';
 import { ResumePreview } from '@/components/resume-preview';
 import { TemplateSelector } from '@/components/template-selector';
-import { ExportDialog } from '@/components/export/export-dialog';
 import { Button } from '@/components/ui/button';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { useTranslation } from '@/hooks/use-translation';
-import { toast } from 'sonner';
-import { useSearchParams, useRouter } from 'next/navigation';
 import {
   Dialog,
   DialogContent,
@@ -24,6 +18,14 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useLocale } from '@/hooks/use-locale';
+import { useTranslation } from '@/hooks/use-translation';
+import exportResume from '@/lib/export';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { toast } from 'sonner';
+import FormatSelector from './format-selector';
 import { Resume } from './home-content';
 
 export type SocialLink = {
@@ -104,6 +106,7 @@ const initialResumeData: ResumeData = {
 
 export function ResumeBuilder() {
   const { t } = useTranslation();
+  const { locale } = useLocale();
   const router = useRouter();
   const searchParams = useSearchParams();
   const resumeId = searchParams.get('id');
@@ -111,13 +114,15 @@ export function ResumeBuilder() {
   const [activeTab, setActiveTab] = useState('personal');
   const [resumeData, setResumeData] = useState<ResumeData>(initialResumeData);
   const [saveDialogOpen, setSaveDialogOpen] = useState(false);
-  const [exportDialogOpen, setExportDialogOpen] = useState(false);
   const [resumeName, setResumeName] = useState('');
   const [currentResumeId, setCurrentResumeId] = useState<string | null>(null);
   const [selectedTemplate, setSelectedTemplate] = useState<
     'classic' | 'modern' | 'professional' | 'compact'
   >('classic');
-  // const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
+  const [exportFormat, setExportFormat] = useState<'image' | 'word' | 'html'>(
+    'html',
+  );
 
   // Load resume data on mount or when resumeId changes
   useEffect(() => {
@@ -169,9 +174,22 @@ export function ResumeBuilder() {
     setActiveTab('preview');
   }, []);
 
-  const handleExport = useCallback(() => {
-    setExportDialogOpen(true);
-  }, []);
+  const handleExport = async () => {
+    setIsExporting(true);
+
+    try {
+      await exportResume(exportFormat, resumeName, locale, resumeData);
+
+      toast.success(t('export.success'), {
+        description: `${resumeName || 'Resume'}.${exportFormat}`,
+      });
+    } catch (error) {
+      console.error('Export error:', error);
+      toast.error(t('export.error'));
+    } finally {
+      setIsExporting(false);
+    }
+  };
 
   const handleSave = useCallback(() => {
     if (currentResumeId) {
@@ -282,7 +300,7 @@ export function ResumeBuilder() {
         </div>
       </div>
 
-      <div className='space-y-6'>
+      <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
         <Tabs value={activeTab} onValueChange={setActiveTab} className='w-full'>
           <TabsList className='grid w-full grid-cols-5 text-xs sm:text-sm'>
             <TabsTrigger value='personal' className='px-1 sm:px-3'>
@@ -326,36 +344,30 @@ export function ResumeBuilder() {
             <div className='space-y-4'>
               <TemplateSelector
                 selectedTemplate={selectedTemplate}
-                onTemplateChange={handleTemplateChange}
+                onTemplateChangeAction={handleTemplateChange}
               />
 
-              <Card>
-                <CardHeader>
-                  <CardTitle>{t('builder.exportOptions')}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className='flex gap-2'>
-                    <Button onClick={handleExport} variant='outline'>
-                      {t('builder.export')}
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
+              <FormatSelector
+                exportFormat={exportFormat}
+                handleExport={handleExport}
+                isExporting={isExporting}
+                setExportFormat={setExportFormat}
+              />
             </div>
           </TabsContent>
         </Tabs>
-      </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>{t('builder.livePreview')}</CardTitle>
-        </CardHeader>
-        <CardContent className='p-6'>
-          <div className='rounded-lg border bg-white px-10 py-14 text-black shadow-sm'>
-            <ResumePreview data={resumeData} template={selectedTemplate} />
-          </div>
-        </CardContent>
-      </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle>{t('builder.livePreview')}</CardTitle>
+          </CardHeader>
+          <CardContent className='p-6'>
+            <div className='rounded-lg border bg-white px-10 py-14 text-black shadow-sm'>
+              <ResumePreview data={resumeData} template={selectedTemplate} />
+            </div>
+          </CardContent>
+        </Card>
+      </div>
 
       <Dialog open={saveDialogOpen} onOpenChange={setSaveDialogOpen}>
         <DialogContent>
@@ -380,14 +392,6 @@ export function ResumeBuilder() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-
-      <ExportDialog
-        open={exportDialogOpen}
-        onOpenChange={setExportDialogOpen}
-        resumeData={resumeData}
-        template={selectedTemplate}
-        resumeName={resumeName || 'My Resume'}
-      />
     </div>
   );
 }

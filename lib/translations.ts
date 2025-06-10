@@ -192,9 +192,13 @@ export const translations: { en: Translations; ru: Translations } = {
     },
     templates: {
       classic: 'Classic',
+      classicDescription: 'Traditional layout with sidebar',
       modern: 'Modern',
+      modernDescription: 'Clean and minimalist design',
       professional: 'Professional',
+      professionalDescription: 'Corporate-style layout',
       compact: 'Compact',
+      compactDescription: 'Detailed layout with photo',
       selectTemplate: 'Select a template for your resume',
     },
     export: {
@@ -207,7 +211,6 @@ export const translations: { en: Translations; ru: Translations } = {
       chooseFormat: 'Choose the format for exporting your resume',
       multipageSupport: 'Multi-page documents will be handled automatically',
       exportFormat: 'Export Format',
-      pdfDescription: 'Multi-page PDF support',
       imageDescription: 'PNG format, multiple files for pages',
       wordDescription: 'Multi-page Word document',
       htmlDescription: 'Single-page Html document',
@@ -452,9 +455,13 @@ export const translations: { en: Translations; ru: Translations } = {
     },
     templates: {
       classic: 'Классический',
+      classicDescription: 'Традиционный вид с боковой панелью',
       modern: 'Современный',
+      modernDescription: 'Минималистичный дизайн',
       professional: 'Профессиональный',
+      professionalDescription: 'Корпоративный стиль (CV)',
       compact: 'Компактный',
+      compactDescription: 'Компактный вид с фото',
       selectTemplate: 'Выберите шаблон для вашего резюме',
     },
     export: {
@@ -468,7 +475,6 @@ export const translations: { en: Translations; ru: Translations } = {
       multipageSupport:
         'Многостраничные документы будут обработаны автоматически',
       exportFormat: 'Формат Экспорта',
-      pdfDescription: 'Поддержка многостраничного PDF',
       imageDescription: 'Формат PNG, несколько файлов для страниц',
       wordDescription: 'Многостраничный документ Word',
       htmlDescription: 'Одностраничный документ Html',

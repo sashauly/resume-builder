@@ -65,6 +65,8 @@ export function CompactTemplate({ data }: CompactTemplateProps) {
             <Image
               src={personalInfo.photo || '/placeholder.svg'}
               alt={t('personalInfo.photo')}
+              width={125}
+              height={125}
               style={{
                 width: '125px',
                 height: '125px',

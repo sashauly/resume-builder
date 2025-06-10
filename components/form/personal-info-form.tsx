@@ -146,6 +146,8 @@ export const PersonalInfoForm = memo(function PersonalInfoForm({
                           <Image
                             src={photoPreview || '/placeholder.svg'}
                             alt='Profile'
+                            width={128}
+                            height={128}
                             className='size-32 rounded-lg border object-cover'
                           />
                           <Button
