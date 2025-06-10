@@ -1,23 +1,22 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
-import { useTranslation } from "@/hooks/use-translation";
-import { Button } from "@/components/ui/button";
+import { useState, useEffect } from 'react';
+import { useTranslation } from '@/hooks/use-translation';
+import { Button } from '@/components/ui/button';
 import {
   Card,
-  CardContent,
   CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import Link from "next/link";
-import { FileText, Plus, Edit, Trash2, Eye, Download } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
-import { ResumePreview } from "@/components/resume-preview";
-import { ExportDialog } from "@/components/export/export-dialog";
-import type { ResumeData } from "@/components/resume-builder";
+} from '@/components/ui/card';
+import Link from 'next/link';
+import { Plus, Edit, Trash2, Eye, Download } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
+import { ResumePreview } from '@/components/resume-preview';
+import { ExportDialog } from '@/components/export/export-dialog';
+import type { ResumeData } from '@/components/resume-builder';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -27,16 +26,16 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+} from '@/components/ui/alert-dialog';
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
+} from '@/components/ui/dialog';
 
-interface Resume {
+export interface Resume {
   id: string;
   name: string;
   data: ResumeData;
@@ -55,12 +54,12 @@ export function HomeContent() {
     // Load saved resumes from localStorage
     const loadResumes = () => {
       try {
-        const savedResumes = localStorage.getItem("savedResumes");
+        const savedResumes = localStorage.getItem('savedResumes');
         if (savedResumes) {
           setResumes(JSON.parse(savedResumes));
         }
       } catch (error) {
-        console.error("Failed to load resumes:", error);
+        console.error('Failed to load resumes:', error);
       }
     };
 
@@ -75,9 +74,9 @@ export function HomeContent() {
     if (deleteId) {
       const updatedResumes = resumes.filter((resume) => resume.id !== deleteId);
       setResumes(updatedResumes);
-      localStorage.setItem("savedResumes", JSON.stringify(updatedResumes));
-      toast.success(t("profile.resumeDeleted"), {
-        description: t("profile.resumeDeletedDesc"),
+      localStorage.setItem('savedResumes', JSON.stringify(updatedResumes));
+      toast.success(t('profile.resumeDeleted'), {
+        description: t('profile.resumeDeletedDesc'),
       });
       setDeleteId(null);
     }
@@ -99,76 +98,76 @@ export function HomeContent() {
   };
 
   return (
-    <div className="space-y-4">
-      <div className="text-center space-y-2">
-        <h1 className="text-3xl font-bold">{t("home.title")}</h1>
-        <p className="text-muted-foreground">{t("home.subtitle")}</p>
+    <div className='space-y-4'>
+      <div className='space-y-2 text-center'>
+        <h1 className='text-3xl font-bold'>{t('home.title')}</h1>
+        <p className='text-muted-foreground'>{t('home.subtitle')}</p>
       </div>
 
-      <div className="container mx-auto py-6 px-4 md:px-6 space-y-2">
+      <div className='container mx-auto space-y-2 px-4 py-6 md:px-6'>
         {resumes.length === 0 ? (
-          <div className="text-center py-12 border rounded-lg bg-muted/30">
-            <h2 className="text-lg font-medium mb-2">
-              {t("home.createResume")}
+          <div className='rounded-lg border bg-muted/30 py-12 text-center'>
+            <h2 className='mb-2 text-lg font-medium'>
+              {t('home.createResume')}
             </h2>
-            <p className="text-muted-foreground mb-4">
-              {t("home.createResumeDesc")}
+            <p className='mb-4 text-muted-foreground'>
+              {t('home.createResumeDesc')}
             </p>
 
             <Button asChild>
-              <Link href="/builder">{t("home.createButton")}</Link>
+              <Link href='/builder'>{t('home.createButton')}</Link>
             </Button>
           </div>
         ) : (
-          <div className="space-y-6">
-            <div className="flex justify-between items-center">
-              <h2 className="text-2xl font-semibold">{t("home.myResumes")}</h2>
+          <div className='space-y-6'>
+            <div className='flex items-center justify-between'>
+              <h2 className='text-2xl font-semibold'>{t('home.myResumes')}</h2>
               <Button asChild>
-                <Link href="/builder">
-                  <Plus className="mr-2 h-4 w-4" />
-                  {t("home.createButton")}
+                <Link href='/builder'>
+                  <Plus className='mr-2 size-4' />
+                  {t('home.createButton')}
                 </Link>
               </Button>
             </div>
 
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <div className='grid gap-6 md:grid-cols-2 lg:grid-cols-3'>
               {resumes.map((resume) => (
-                <Card key={resume.id} className="overflow-hidden">
+                <Card key={resume.id} className='overflow-hidden'>
                   <CardHeader>
-                    <div className="flex justify-between">
-                      <CardTitle className="text-lg">{resume.name}</CardTitle>
+                    <div className='flex justify-between'>
+                      <CardTitle className='text-lg'>{resume.name}</CardTitle>
                       <Button
-                        variant="outline"
-                        size="sm"
+                        variant='outline'
+                        size='sm'
                         onClick={() => handlePreview(resume)}
                       >
-                        <Eye className="mr-2 h-4 w-4" />
-                        {t("common.preview")}
+                        <Eye className='mr-2 size-4' />
+                        {t('common.preview')}
                       </Button>
                     </div>
                     <CardDescription>
-                      {resume.data.personalInfo.name || "No name"}
+                      {resume.data.personalInfo.name || 'No name'}
                       {resume.data.personalInfo.jobTitle && (
-                        <span className="block text-sm text-muted-foreground">
+                        <span className='block text-sm text-muted-foreground'>
                           {resume.data.personalInfo.jobTitle}
                         </span>
                       )}
                     </CardDescription>
                   </CardHeader>
-                  <CardFooter className="flex justify-end gap-2">
+                  <CardFooter className='flex justify-end gap-2'>
                     <Button
-                      variant="outline"
-                      size="sm"
+                      variant='outline'
+                      size='sm'
                       onClick={() => handleEdit(resume.id)}
                     >
-                      <Edit className="h-4 w-4" />
+                      <Edit className='size-4' />
                     </Button>
                     <Button
-                      variant="destructive"
-                      size="sm"
+                      variant='destructive'
+                      size='sm'
                       onClick={() => handleDelete(resume.id)}
                     >
-                      <Trash2 className="h-4 w-4" />
+                      <Trash2 className='size-4' />
                     </Button>
                   </CardFooter>
                 </Card>
@@ -184,18 +183,18 @@ export function HomeContent() {
       >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>{t("profile.confirmDelete")}</AlertDialogTitle>
+            <AlertDialogTitle>{t('profile.confirmDelete')}</AlertDialogTitle>
             <AlertDialogDescription>
-              {t("profile.confirmDeleteDesc")}
+              {t('profile.confirmDeleteDesc')}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>{t("common.cancel")}</AlertDialogCancel>
+            <AlertDialogCancel>{t('common.cancel')}</AlertDialogCancel>
             <AlertDialogAction
               onClick={confirmDelete}
-              className="bg-destructive text-destructive-foreground"
+              className='bg-destructive text-destructive-foreground'
             >
-              {t("common.delete")}
+              {t('common.delete')}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -205,31 +204,31 @@ export function HomeContent() {
         open={!!previewResume}
         onOpenChange={(open) => !open && setPreviewResume(null)}
       >
-        <DialogContent className="max-w-4xl max-h-[90vh] overflow-auto">
+        <DialogContent className='max-h-[90vh] max-w-4xl overflow-auto'>
           <DialogHeader>
             <DialogTitle>{previewResume?.name}</DialogTitle>
             <DialogDescription>
               <Button
-                variant="secondary"
-                size="sm"
+                variant='secondary'
+                size='sm'
                 onClick={() => handleExport(previewResume)}
               >
-                <Download className="h-4 w-4" />
-                {t("builder.export")}
+                <Download className='size-4' />
+                {t('builder.export')}
               </Button>
             </DialogDescription>
           </DialogHeader>
-          <div className="border rounded-md bg-white text-black">
+          <div className='rounded-md border bg-white text-black'>
             {previewResume && (
-              <div id="resume-preview-export">
+              <div id='resume-preview-export'>
                 <ResumePreview
                   data={previewResume.data}
                   template={
                     previewResume.template as
-                      | "classic"
-                      | "modern"
-                      | "professional"
-                      | "compact"
+                      | 'classic'
+                      | 'modern'
+                      | 'professional'
+                      | 'compact'
                   }
                 />
               </div>
@@ -239,34 +238,34 @@ export function HomeContent() {
       </Dialog>
 
       {exportResume && (
-        <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-lg p-6 max-w-4xl w-full max-h-[90vh] overflow-auto">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-semibold">
+        <div className='fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4'>
+          <div className='max-h-[90vh] w-full max-w-4xl overflow-auto rounded-lg bg-white p-6'>
+            <div className='mb-4 flex items-center justify-between'>
+              <h2 className='text-xl font-semibold'>
                 Export {exportResume.name}
               </h2>
               <Button
-                variant="ghost"
-                size="sm"
+                variant='ghost'
+                size='sm'
                 onClick={() => setExportResume(null)}
               >
                 ×
               </Button>
             </div>
 
-            <div className="mb-6">
+            <div className='mb-6'>
               <div
                 id={`export-content-${exportResume.id}`}
-                className="border rounded-lg p-4 bg-white"
+                className='rounded-lg border bg-white p-4'
               >
                 <ResumePreview
                   data={exportResume.data}
                   template={
                     exportResume.template as
-                      | "classic"
-                      | "modern"
-                      | "professional"
-                      | "compact"
+                      | 'classic'
+                      | 'modern'
+                      | 'professional'
+                      | 'compact'
                   }
                 />
               </div>
@@ -278,10 +277,10 @@ export function HomeContent() {
               resumeData={exportResume.data}
               template={
                 exportResume.template as
-                  | "classic"
-                  | "modern"
-                  | "professional"
-                  | "compact"
+                  | 'classic'
+                  | 'modern'
+                  | 'professional'
+                  | 'compact'
               }
               resumeName={exportResume.name}
             />

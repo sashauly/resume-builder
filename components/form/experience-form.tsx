@@ -1,15 +1,15 @@
-"use client";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useFieldArray, useForm } from "react-hook-form";
-import { z } from "zod";
-import { Button } from "@/components/ui/button";
+'use client';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useFieldArray, useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from '@/components/ui/card';
 import {
   Form,
   FormControl,
@@ -17,30 +17,30 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Plus, Trash2 } from "lucide-react";
-import type { ResumeData } from "../resume-builder";
-import { useTranslation } from "@/hooks/use-translation";
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Plus, Trash2 } from 'lucide-react';
+import type { ResumeData } from '../resume-builder';
+import { useTranslation } from '@/hooks/use-translation';
 
-interface ExperienceFormProps {
-  initialData: ResumeData["experience"];
-  onSave: (data: ResumeData["experience"]) => void;
+export interface ExperienceFormProps {
+  initialData: ResumeData['experience'];
+  onSave: (data: ResumeData['experience']) => void;
 }
 
 export function ExperienceForm({ initialData, onSave }: ExperienceFormProps) {
   const { t } = useTranslation();
 
   const experienceItemSchema = z.object({
-    company: z.string().min(1, t("experience.companyRequired")),
-    position: z.string().min(1, t("experience.positionRequired")),
+    company: z.string().min(1, t('experience.companyRequired')),
+    position: z.string().min(1, t('experience.positionRequired')),
     location: z.string().optional(),
-    startDate: z.string().min(1, t("experience.startDateRequired")),
+    startDate: z.string().min(1, t('experience.startDateRequired')),
     endDate: z.string().optional(),
     current: z.boolean().default(false),
-    description: z.string().min(1, t("experience.descriptionRequired")),
+    description: z.string().min(1, t('experience.descriptionRequired')),
     achievements: z.string().optional(),
     techStack: z.string().optional(),
   });
@@ -48,7 +48,7 @@ export function ExperienceForm({ initialData, onSave }: ExperienceFormProps) {
   const formSchema = z.object({
     experience: z
       .array(experienceItemSchema)
-      .min(1, t("experience.minOneEntry")),
+      .min(1, t('experience.minOneEntry')),
   });
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -58,15 +58,15 @@ export function ExperienceForm({ initialData, onSave }: ExperienceFormProps) {
         ? initialData
         : [
             {
-              company: "",
-              position: "",
-              location: "",
-              startDate: "",
-              endDate: "",
+              company: '',
+              position: '',
+              location: '',
+              startDate: '',
+              endDate: '',
               current: false,
-              description: "",
-              achievements: "",
-              techStack: "",
+              description: '',
+              achievements: '',
+              techStack: '',
             },
           ],
     },
@@ -74,7 +74,7 @@ export function ExperienceForm({ initialData, onSave }: ExperienceFormProps) {
 
   const { fields, append, remove } = useFieldArray({
     control: form.control,
-    name: "experience",
+    name: 'experience',
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
@@ -84,28 +84,28 @@ export function ExperienceForm({ initialData, onSave }: ExperienceFormProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{t("experience.title")}</CardTitle>
-        <CardDescription>{t("experience.description")}</CardDescription>
+        <CardTitle>{t('experience.title')}</CardTitle>
+        <CardDescription>{t('experience.description')}</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-6'>
             {fields.map((field, index) => (
               <div
                 key={field.id}
-                className="space-y-4 p-4 border rounded-md relative"
+                className='relative space-y-4 rounded-md border p-4'
               >
                 {index > 0 && (
                   <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon"
-                    className="absolute top-2 right-2"
+                    type='button'
+                    variant='ghost'
+                    size='icon'
+                    className='absolute right-2 top-2'
                     onClick={() => remove(index)}
                   >
-                    <Trash2 className="h-4 w-4" />
-                    <span className="sr-only">
-                      {t("experience.removeExperience")}
+                    <Trash2 className='size-4' />
+                    <span className='sr-only'>
+                      {t('experience.removeExperience')}
                     </span>
                   </Button>
                 )}
@@ -116,12 +116,12 @@ export function ExperienceForm({ initialData, onSave }: ExperienceFormProps) {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>
-                        {t("experience.company")}{" "}
-                        <span className="text-red-500">*</span>
+                        {t('experience.company')}{' '}
+                        <span className='text-red-500'>*</span>
                       </FormLabel>
                       <FormControl>
                         <Input
-                          placeholder={t("experience.companyPlaceholder")}
+                          placeholder={t('experience.companyPlaceholder')}
                           {...field}
                         />
                       </FormControl>
@@ -136,12 +136,12 @@ export function ExperienceForm({ initialData, onSave }: ExperienceFormProps) {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>
-                        {t("experience.position")}{" "}
-                        <span className="text-red-500">*</span>
+                        {t('experience.position')}{' '}
+                        <span className='text-red-500'>*</span>
                       </FormLabel>
                       <FormControl>
                         <Input
-                          placeholder={t("experience.positionPlaceholder")}
+                          placeholder={t('experience.positionPlaceholder')}
                           {...field}
                         />
                       </FormControl>
@@ -156,11 +156,11 @@ export function ExperienceForm({ initialData, onSave }: ExperienceFormProps) {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>
-                        {t("experience.location")} ({t("common.optional")})
+                        {t('experience.location')} ({t('common.optional')})
                       </FormLabel>
                       <FormControl>
                         <Input
-                          placeholder={t("experience.locationPlaceholder")}
+                          placeholder={t('experience.locationPlaceholder')}
                           {...field}
                         />
                       </FormControl>
@@ -169,19 +169,19 @@ export function ExperienceForm({ initialData, onSave }: ExperienceFormProps) {
                   )}
                 />
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className='grid grid-cols-2 gap-4'>
                   <FormField
                     control={form.control}
                     name={`experience.${index}.startDate`}
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>
-                          {t("experience.startDate")}{" "}
-                          <span className="text-red-500">*</span>
+                          {t('experience.startDate')}{' '}
+                          <span className='text-red-500'>*</span>
                         </FormLabel>
                         <FormControl>
                           <Input
-                            placeholder={t("experience.startDatePlaceholder")}
+                            placeholder={t('experience.startDatePlaceholder')}
                             {...field}
                           />
                         </FormControl>
@@ -195,10 +195,10 @@ export function ExperienceForm({ initialData, onSave }: ExperienceFormProps) {
                     name={`experience.${index}.endDate`}
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>{t("experience.endDate")}</FormLabel>
+                        <FormLabel>{t('experience.endDate')}</FormLabel>
                         <FormControl>
                           <Input
-                            placeholder={t("experience.endDatePlaceholder")}
+                            placeholder={t('experience.endDatePlaceholder')}
                             {...field}
                             disabled={form.watch(`experience.${index}.current`)}
                           />
@@ -213,7 +213,7 @@ export function ExperienceForm({ initialData, onSave }: ExperienceFormProps) {
                   control={form.control}
                   name={`experience.${index}.current`}
                   render={({ field }) => (
-                    <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                    <FormItem className='flex flex-row items-start space-x-3 space-y-0'>
                       <FormControl>
                         <Checkbox
                           checked={field.value}
@@ -222,16 +222,16 @@ export function ExperienceForm({ initialData, onSave }: ExperienceFormProps) {
                             if (checked) {
                               form.setValue(
                                 `experience.${index}.endDate`,
-                                "Present"
+                                'Present',
                               );
                             } else {
-                              form.setValue(`experience.${index}.endDate`, "");
+                              form.setValue(`experience.${index}.endDate`, '');
                             }
                           }}
                         />
                       </FormControl>
-                      <div className="space-y-1 leading-none">
-                        <FormLabel>{t("experience.current")}</FormLabel>
+                      <div className='space-y-1 leading-none'>
+                        <FormLabel>{t('experience.current')}</FormLabel>
                       </div>
                     </FormItem>
                   )}
@@ -243,13 +243,13 @@ export function ExperienceForm({ initialData, onSave }: ExperienceFormProps) {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>
-                        {t("experience.description")}{" "}
-                        <span className="text-red-500">*</span>
+                        {t('experience.description')}{' '}
+                        <span className='text-red-500'>*</span>
                       </FormLabel>
                       <FormControl>
                         <Textarea
-                          placeholder={t("experience.descriptionPlaceholder")}
-                          className="min-h-[100px]"
+                          placeholder={t('experience.descriptionPlaceholder')}
+                          className='min-h-[100px]'
                           {...field}
                         />
                       </FormControl>
@@ -264,12 +264,12 @@ export function ExperienceForm({ initialData, onSave }: ExperienceFormProps) {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>
-                        {t("experience.achievements")} ({t("common.optional")})
+                        {t('experience.achievements')} ({t('common.optional')})
                       </FormLabel>
                       <FormControl>
                         <Textarea
-                          placeholder={t("experience.achievementsPlaceholder")}
-                          className="min-h-[80px]"
+                          placeholder={t('experience.achievementsPlaceholder')}
+                          className='min-h-[80px]'
                           {...field}
                         />
                       </FormControl>
@@ -284,12 +284,12 @@ export function ExperienceForm({ initialData, onSave }: ExperienceFormProps) {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>
-                        {t("experience.techStack")} ({t("common.optional")})
+                        {t('experience.techStack')} ({t('common.optional')})
                       </FormLabel>
                       <FormControl>
                         <Textarea
-                          placeholder={t("experience.techStackPlaceholder")}
-                          className="min-h-[60px]"
+                          placeholder={t('experience.techStackPlaceholder')}
+                          className='min-h-[60px]'
                           {...field}
                         />
                       </FormControl>
@@ -301,30 +301,30 @@ export function ExperienceForm({ initialData, onSave }: ExperienceFormProps) {
             ))}
 
             <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              className="mt-2"
+              type='button'
+              variant='outline'
+              size='sm'
+              className='mt-2'
               onClick={() =>
                 append({
-                  company: "",
-                  position: "",
-                  location: "",
-                  startDate: "",
-                  endDate: "",
+                  company: '',
+                  position: '',
+                  location: '',
+                  startDate: '',
+                  endDate: '',
                   current: false,
-                  description: "",
-                  achievements: "",
-                  techStack: "",
+                  description: '',
+                  achievements: '',
+                  techStack: '',
                 })
               }
             >
-              <Plus className="mr-2 h-4 w-4" />
-              {t("experience.addExperience")}
+              <Plus className='mr-2 size-4' />
+              {t('experience.addExperience')}
             </Button>
 
-            <Button type="submit" className="w-full">
-              {t("common.continue")}
+            <Button type='submit' className='w-full'>
+              {t('common.continue')}
             </Button>
           </form>
         </Form>

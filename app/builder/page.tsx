@@ -1,5 +1,5 @@
-import { ResumeBuilder } from "@/components/resume-builder";
-import { Suspense } from "react";
+import { ResumeBuilder } from '@/components/resume-builder';
+import { Suspense } from 'react';
 
 export default function BuilderPage() {
   return (

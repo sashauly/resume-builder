@@ -1,20 +1,19 @@
-"use client";
+'use client';
 
-import { useState, useEffect, useRef, useCallback, useMemo } from "react";
-import { PersonalInfoForm } from "@/components/form/personal-info-form";
-import { EducationForm } from "@/components/form/education-form";
-import { ExperienceForm } from "@/components/form/experience-form";
-import { SkillsForm } from "@/components/form/skills-form";
-import { ResumePreview } from "@/components/resume-preview";
-import { TemplateSelector } from "@/components/template-selector";
-import { ExportDialog } from "@/components/export/export-dialog";
-import { PDFExporter } from "@/components/export/pdf-exporter";
-import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useTranslation } from "@/hooks/use-translation";
-import { toast } from "sonner";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useState, useEffect, useCallback, useMemo } from 'react';
+import { PersonalInfoForm } from '@/components/form/personal-info-form';
+import { EducationForm } from '@/components/form/education-form';
+import { ExperienceForm } from '@/components/form/experience-form';
+import { SkillsForm } from '@/components/form/skills-form';
+import { ResumePreview } from '@/components/resume-preview';
+import { TemplateSelector } from '@/components/template-selector';
+import { ExportDialog } from '@/components/export/export-dialog';
+import { Button } from '@/components/ui/button';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useTranslation } from '@/hooks/use-translation';
+import { toast } from 'sonner';
+import { useSearchParams, useRouter } from 'next/navigation';
 import {
   Dialog,
   DialogContent,
@@ -22,9 +21,10 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Resume } from './home-content';
 
 export type SocialLink = {
   platform: string;
@@ -67,36 +67,36 @@ export type ResumeData = {
 
 const initialResumeData: ResumeData = {
   personalInfo: {
-    name: "",
-    email: "",
-    phone: "",
-    address: "",
-    summary: "",
-    photo: "",
-    jobTitle: "",
+    name: '',
+    email: '',
+    phone: '',
+    address: '',
+    summary: '',
+    photo: '',
+    jobTitle: '',
     socialLinks: [],
   },
   education: [
     {
-      institution: "",
-      degree: "",
-      fieldOfStudy: "",
-      startDate: "",
-      endDate: "",
-      description: "",
+      institution: '',
+      degree: '',
+      fieldOfStudy: '',
+      startDate: '',
+      endDate: '',
+      description: '',
     },
   ],
   experience: [
     {
-      company: "",
-      position: "",
-      location: "",
-      startDate: "",
-      endDate: "",
+      company: '',
+      position: '',
+      location: '',
+      startDate: '',
+      endDate: '',
       current: false,
-      description: "",
-      achievements: "",
-      techStack: "",
+      description: '',
+      achievements: '',
+      techStack: '',
     },
   ],
   skills: [],
@@ -106,27 +106,27 @@ export function ResumeBuilder() {
   const { t } = useTranslation();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const resumeId = searchParams.get("id");
+  const resumeId = searchParams.get('id');
 
-  const [activeTab, setActiveTab] = useState("personal");
+  const [activeTab, setActiveTab] = useState('personal');
   const [resumeData, setResumeData] = useState<ResumeData>(initialResumeData);
   const [saveDialogOpen, setSaveDialogOpen] = useState(false);
   const [exportDialogOpen, setExportDialogOpen] = useState(false);
-  const [resumeName, setResumeName] = useState("");
+  const [resumeName, setResumeName] = useState('');
   const [currentResumeId, setCurrentResumeId] = useState<string | null>(null);
   const [selectedTemplate, setSelectedTemplate] = useState<
-    "classic" | "modern" | "professional" | "compact"
-  >("classic");
+    'classic' | 'modern' | 'professional' | 'compact'
+  >('classic');
   // const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
 
   // Load resume data on mount or when resumeId changes
   useEffect(() => {
     if (resumeId) {
       try {
-        const savedResumes = localStorage.getItem("savedResumes");
+        const savedResumes = localStorage.getItem('savedResumes');
         if (savedResumes) {
           const resumes = JSON.parse(savedResumes);
-          const resume = resumes.find((r: any) => r.id === resumeId);
+          const resume = resumes.find((r: Resume) => r.id === resumeId);
           if (resume) {
             setResumeData(resume.data);
             setResumeName(resume.name);
@@ -137,36 +137,36 @@ export function ResumeBuilder() {
           }
         }
       } catch (error) {
-        console.error("Failed to load resume:", error);
+        console.error('Failed to load resume:', error);
       }
     }
   }, [resumeId]);
 
   // Memoized update functions to prevent unnecessary re-renders
   const updatePersonalInfo = useCallback(
-    (personalInfo: ResumeData["personalInfo"]) => {
+    (personalInfo: ResumeData['personalInfo']) => {
       setResumeData((prev) => ({ ...prev, personalInfo }));
-      setActiveTab("education");
+      setActiveTab('education');
     },
-    []
+    [],
   );
 
-  const updateEducation = useCallback((education: ResumeData["education"]) => {
+  const updateEducation = useCallback((education: ResumeData['education']) => {
     setResumeData((prev) => ({ ...prev, education }));
-    setActiveTab("experience");
+    setActiveTab('experience');
   }, []);
 
   const updateExperience = useCallback(
-    (experience: ResumeData["experience"]) => {
+    (experience: ResumeData['experience']) => {
       setResumeData((prev) => ({ ...prev, experience }));
-      setActiveTab("skills");
+      setActiveTab('skills');
     },
-    []
+    [],
   );
 
-  const updateSkills = useCallback((skills: ResumeData["skills"]) => {
+  const updateSkills = useCallback((skills: ResumeData['skills']) => {
     setResumeData((prev) => ({ ...prev, skills }));
-    setActiveTab("preview");
+    setActiveTab('preview');
   }, []);
 
   const handleExport = useCallback(() => {
@@ -177,10 +177,10 @@ export function ResumeBuilder() {
     if (currentResumeId) {
       // Update existing resume
       try {
-        const savedResumes = localStorage.getItem("savedResumes");
+        const savedResumes = localStorage.getItem('savedResumes');
         if (savedResumes) {
           const resumes = JSON.parse(savedResumes);
-          const updatedResumes = resumes.map((r: any) => {
+          const updatedResumes = resumes.map((r: Resume) => {
             if (r.id === currentResumeId) {
               return {
                 ...r,
@@ -191,13 +191,13 @@ export function ResumeBuilder() {
             }
             return r;
           });
-          localStorage.setItem("savedResumes", JSON.stringify(updatedResumes));
-          toast.success(t("builder.resumeSaved"), {
-            description: t("builder.resumeSavedDesc"),
+          localStorage.setItem('savedResumes', JSON.stringify(updatedResumes));
+          toast.success(t('builder.resumeSaved'), {
+            description: t('builder.resumeSavedDesc'),
           });
         }
       } catch (error) {
-        console.error("Failed to save resume:", error);
+        console.error('Failed to save resume:', error);
       }
     } else {
       // Show save dialog for new resume
@@ -224,56 +224,56 @@ export function ResumeBuilder() {
         createdAt: new Date().toISOString(),
       };
 
-      const savedResumes = localStorage.getItem("savedResumes");
+      const savedResumes = localStorage.getItem('savedResumes');
       let resumes = [];
       if (savedResumes) {
         resumes = JSON.parse(savedResumes);
       }
       resumes.push(newResume);
-      localStorage.setItem("savedResumes", JSON.stringify(resumes));
+      localStorage.setItem('savedResumes', JSON.stringify(resumes));
 
       setCurrentResumeId(newResumeId);
       setSaveDialogOpen(false);
-      toast.success(t("builder.resumeSaved"), {
-        description: t("builder.resumeSavedDesc"),
+      toast.success(t('builder.resumeSaved'), {
+        description: t('builder.resumeSavedDesc'),
       });
 
       // Redirect to the edit URL
       router.push(`/builder?id=${newResumeId}`);
     } catch (error) {
-      console.error("Failed to save resume:", error);
-      toast.error("Failed to save resume", {
-        description: "Please try again.",
+      console.error('Failed to save resume:', error);
+      toast.error('Failed to save resume', {
+        description: 'Please try again.',
       });
     }
   }, [resumeName, resumeData, selectedTemplate, router, t]);
 
   // Memoized template change handler
   const handleTemplateChange = useCallback(
-    (template: "classic" | "modern" | "professional" | "compact") => {
+    (template: 'classic' | 'modern' | 'professional' | 'compact') => {
       setSelectedTemplate(template);
     },
-    []
+    [],
   );
 
   // Memoized save button text
   const saveButtonText = useMemo(() => {
-    return currentResumeId ? t("builder.save") : t("builder.save");
+    return currentResumeId ? t('builder.save') : t('builder.save');
   }, [currentResumeId, t]);
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
+    <div className='space-y-6'>
+      <div className='flex items-center justify-between'>
         <div>
-          <h1 className="text-3xl font-bold">{t("builder.title")}</h1>
-          <p className="text-muted-foreground">{t("builder.subtitle")}</p>
+          <h1 className='text-3xl font-bold'>{t('builder.title')}</h1>
+          <p className='text-muted-foreground'>{t('builder.subtitle')}</p>
         </div>
-        <div className="flex gap-2">
+        <div className='flex gap-2'>
           {currentResumeId ? (
             <>
               <Button onClick={handleSave}>{saveButtonText}</Button>
-              <Button variant="outline" onClick={handleSaveAs}>
-                {t("builder.saveAs")}
+              <Button variant='outline' onClick={handleSaveAs}>
+                {t('builder.saveAs')}
               </Button>
             </>
           ) : (
@@ -282,48 +282,48 @@ export function ResumeBuilder() {
         </div>
       </div>
 
-      <div className="space-y-6">
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid grid-cols-5 w-full text-xs sm:text-sm">
-            <TabsTrigger value="personal" className="px-1 sm:px-3">
-              {t("builder.personal")}
+      <div className='space-y-6'>
+        <Tabs value={activeTab} onValueChange={setActiveTab} className='w-full'>
+          <TabsList className='grid w-full grid-cols-5 text-xs sm:text-sm'>
+            <TabsTrigger value='personal' className='px-1 sm:px-3'>
+              {t('builder.personal')}
             </TabsTrigger>
-            <TabsTrigger value="education" className="px-1 sm:px-3">
-              {t("builder.education")}
+            <TabsTrigger value='education' className='px-1 sm:px-3'>
+              {t('builder.education')}
             </TabsTrigger>
-            <TabsTrigger value="experience" className="px-1 sm:px-3">
-              {t("builder.experience")}
+            <TabsTrigger value='experience' className='px-1 sm:px-3'>
+              {t('builder.experience')}
             </TabsTrigger>
-            <TabsTrigger value="skills" className="px-1 sm:px-3">
-              {t("builder.skills")}
+            <TabsTrigger value='skills' className='px-1 sm:px-3'>
+              {t('builder.skills')}
             </TabsTrigger>
-            <TabsTrigger value="preview" className="px-1 sm:px-3">
-              {t("builder.preview")}
+            <TabsTrigger value='preview' className='px-1 sm:px-3'>
+              {t('builder.preview')}
             </TabsTrigger>
           </TabsList>
-          <TabsContent value="personal" className="mt-6">
+          <TabsContent value='personal' className='mt-6'>
             <PersonalInfoForm
               initialData={resumeData.personalInfo}
               onSave={updatePersonalInfo}
             />
           </TabsContent>
-          <TabsContent value="education" className="mt-6">
+          <TabsContent value='education' className='mt-6'>
             <EducationForm
               initialData={resumeData.education}
               onSave={updateEducation}
             />
           </TabsContent>
-          <TabsContent value="experience" className="mt-6">
+          <TabsContent value='experience' className='mt-6'>
             <ExperienceForm
               initialData={resumeData.experience}
               onSave={updateExperience}
             />
           </TabsContent>
-          <TabsContent value="skills" className="mt-6">
+          <TabsContent value='skills' className='mt-6'>
             <SkillsForm initialData={resumeData.skills} onSave={updateSkills} />
           </TabsContent>
-          <TabsContent value="preview" className="mt-6">
-            <div className="space-y-4">
+          <TabsContent value='preview' className='mt-6'>
+            <div className='space-y-4'>
               <TemplateSelector
                 selectedTemplate={selectedTemplate}
                 onTemplateChange={handleTemplateChange}
@@ -331,12 +331,12 @@ export function ResumeBuilder() {
 
               <Card>
                 <CardHeader>
-                  <CardTitle>{t("builder.exportOptions")}</CardTitle>
+                  <CardTitle>{t('builder.exportOptions')}</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="flex gap-2">
-                    <Button onClick={handleExport} variant="outline">
-                      {t("builder.export")}
+                  <div className='flex gap-2'>
+                    <Button onClick={handleExport} variant='outline'>
+                      {t('builder.export')}
                     </Button>
                   </div>
                 </CardContent>
@@ -348,10 +348,10 @@ export function ResumeBuilder() {
 
       <Card>
         <CardHeader>
-          <CardTitle>{t("builder.livePreview")}</CardTitle>
+          <CardTitle>{t('builder.livePreview')}</CardTitle>
         </CardHeader>
-        <CardContent className="p-6">
-          <div className="border rounded-lg px-10 py-14 bg-white text-black shadow-sm">
+        <CardContent className='p-6'>
+          <div className='rounded-lg border bg-white px-10 py-14 text-black shadow-sm'>
             <ResumePreview data={resumeData} template={selectedTemplate} />
           </div>
         </CardContent>
@@ -360,23 +360,23 @@ export function ResumeBuilder() {
       <Dialog open={saveDialogOpen} onOpenChange={setSaveDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>{t("builder.saveAs")}</DialogTitle>
-            <DialogDescription>{t("builder.resumeName")}</DialogDescription>
+            <DialogTitle>{t('builder.saveAs')}</DialogTitle>
+            <DialogDescription>{t('builder.resumeName')}</DialogDescription>
           </DialogHeader>
-          <div className="py-4">
-            <Label htmlFor="resume-name">{t("builder.resumeName")}</Label>
+          <div className='py-4'>
+            <Label htmlFor='resume-name'>{t('builder.resumeName')}</Label>
             <Input
-              id="resume-name"
+              id='resume-name'
               value={resumeName}
               onChange={(e) => setResumeName(e.target.value)}
-              placeholder="My Professional Resume"
+              placeholder='My Professional Resume'
             />
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setSaveDialogOpen(false)}>
-              {t("common.cancel")}
+            <Button variant='outline' onClick={() => setSaveDialogOpen(false)}>
+              {t('common.cancel')}
             </Button>
-            <Button onClick={saveNewResume}>{t("common.save")}</Button>
+            <Button onClick={saveNewResume}>{t('common.save')}</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
@@ -386,7 +386,7 @@ export function ResumeBuilder() {
         onOpenChange={setExportDialogOpen}
         resumeData={resumeData}
         template={selectedTemplate}
-        resumeName={resumeName || "My Resume"}
+        resumeName={resumeName || 'My Resume'}
       />
     </div>
   );

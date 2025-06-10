@@ -1,19 +1,19 @@
-"use client";
+'use client';
 
-import type React from "react";
+import type React from 'react';
 
-import { useState } from "react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import * as z from "zod";
-import { Button } from "@/components/ui/button";
+import { useState } from 'react';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import * as z from 'zod';
+import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from '@/components/ui/card';
 import {
   Form,
   FormControl,
@@ -21,20 +21,20 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { X } from "lucide-react";
-import type { ResumeData } from "../resume-builder";
-import { useTranslation } from "@/hooks/use-translation";
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Badge } from '@/components/ui/badge';
+import { X } from 'lucide-react';
+import type { ResumeData } from '../resume-builder';
+import { useTranslation } from '@/hooks/use-translation';
 
 const formSchema = z.object({
   skill: z.string().optional(),
 });
 
-interface SkillsFormProps {
-  initialData: ResumeData["skills"];
-  onSave: (data: ResumeData["skills"]) => void;
+export interface SkillsFormProps {
+  initialData: ResumeData['skills'];
+  onSave: (data: ResumeData['skills']) => void;
 }
 
 export function SkillsForm({ initialData, onSave }: SkillsFormProps) {
@@ -44,7 +44,7 @@ export function SkillsForm({ initialData, onSave }: SkillsFormProps) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      skill: "",
+      skill: '',
     },
   });
 
@@ -68,7 +68,7 @@ export function SkillsForm({ initialData, onSave }: SkillsFormProps) {
   }
 
   function handleKeyDown(e: React.KeyboardEvent) {
-    if (e.key === "Enter") {
+    if (e.key === 'Enter') {
       e.preventDefault();
       const value = form.getValues().skill;
       if (value) {
@@ -80,27 +80,27 @@ export function SkillsForm({ initialData, onSave }: SkillsFormProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{t("skills.title")}</CardTitle>
-        <CardDescription>{t("skills.description")}</CardDescription>
+        <CardTitle>{t('skills.title')}</CardTitle>
+        <CardDescription>{t('skills.description')}</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-6'>
             <FormField
               control={form.control}
-              name="skill"
+              name='skill'
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>{t("skills.addSkills")}</FormLabel>
+                  <FormLabel>{t('skills.addSkills')}</FormLabel>
                   <FormControl>
-                    <div className="flex space-x-2">
+                    <div className='flex space-x-2'>
                       <Input
-                        placeholder={t("skills.skillPlaceholder")}
+                        placeholder={t('skills.skillPlaceholder')}
                         {...field}
                         onKeyDown={handleKeyDown}
                       />
                       <Button
-                        type="button"
+                        type='button'
                         onClick={() => {
                           const value = form.getValues().skill;
                           if (value) {
@@ -108,7 +108,7 @@ export function SkillsForm({ initialData, onSave }: SkillsFormProps) {
                           }
                         }}
                       >
-                        {t("skills.addButton")}
+                        {t('skills.addButton')}
                       </Button>
                     </div>
                   </FormControl>
@@ -117,31 +117,31 @@ export function SkillsForm({ initialData, onSave }: SkillsFormProps) {
               )}
             />
 
-            <div className="border rounded-md p-4 min-h-[100px]">
-              <div className="text-sm font-medium mb-2">
-                {t("skills.yourSkills")}
+            <div className='min-h-[100px] rounded-md border p-4'>
+              <div className='mb-2 text-sm font-medium'>
+                {t('skills.yourSkills')}
               </div>
               {skills.length === 0 ? (
-                <p className="text-sm text-muted-foreground">
-                  {t("skills.noSkills")}
+                <p className='text-sm text-muted-foreground'>
+                  {t('skills.noSkills')}
                 </p>
               ) : (
-                <div className="flex flex-wrap gap-2">
+                <div className='flex flex-wrap gap-2'>
                   {skills.map((skill, index) => (
                     <Badge
                       key={index}
-                      variant="secondary"
-                      className="px-2 py-1"
+                      variant='secondary'
+                      className='px-2 py-1'
                     >
                       {skill}
                       <button
-                        type="button"
+                        type='button'
                         onClick={() => removeSkill(skill)}
-                        className="ml-1 hover:text-destructive"
+                        className='ml-1 hover:text-destructive'
                       >
-                        <X className="h-3 w-3" />
-                        <span className="sr-only">
-                          {t("skills.removeSkill")} {skill}
+                        <X className='size-3' />
+                        <span className='sr-only'>
+                          {t('skills.removeSkill')} {skill}
                         </span>
                       </button>
                     </Badge>
@@ -151,12 +151,12 @@ export function SkillsForm({ initialData, onSave }: SkillsFormProps) {
             </div>
 
             <Button
-              type="button"
-              className="w-full"
+              type='button'
+              className='w-full'
               onClick={() => onSave(skills)}
               disabled={skills.length === 0}
             >
-              {t("common.continue")}
+              {t('common.continue')}
             </Button>
           </form>
         </Form>

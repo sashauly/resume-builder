@@ -1,14 +1,14 @@
-"use client";
+'use client';
 
-import { Globe } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Globe } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { useLocale } from "@/hooks/use-locale";
+} from '@/components/ui/dropdown-menu';
+import { useLocale } from '@/hooks/use-locale';
 
 export function LocaleToggle() {
   const { locale, setLocale } = useLocale();
@@ -16,19 +16,19 @@ export function LocaleToggle() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon">
-          <Globe className="h-[1.2rem] w-[1.2rem]" />
-          <span className="sr-only">Toggle language</span>
+        <Button variant='ghost' size='icon'>
+          <Globe className='size-[1.2rem]' />
+          <span className='sr-only'>Toggle language</span>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={() => setLocale("en")}>
+      <DropdownMenuContent align='end'>
+        <DropdownMenuItem onClick={() => setLocale('en')}>
           English
-          {locale === "en" && " ✓"}
+          {locale === 'en' && ' ✓'}
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setLocale("ru")}>
+        <DropdownMenuItem onClick={() => setLocale('ru')}>
           Русский
-          {locale === "ru" && " ✓"}
+          {locale === 'ru' && ' ✓'}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

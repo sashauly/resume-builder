@@ -1,8 +1,9 @@
-"use client";
+'use client';
 
-import { useTranslation } from "@/hooks/use-translation";
-import type { ResumeData } from "../resume-builder";
-import { Github, Send, Linkedin, Twitter, Globe } from "lucide-react";
+import { useTranslation } from '@/hooks/use-translation';
+import type { ResumeData } from '../resume-builder';
+import { Github, Send, Linkedin, Twitter, Globe } from 'lucide-react';
+import Image from 'next/image';
 
 interface ModernTemplateProps {
   data: ResumeData;
@@ -10,15 +11,15 @@ interface ModernTemplateProps {
 
 const getSocialIcon = (platform: string) => {
   switch (platform) {
-    case "github":
+    case 'github':
       return Github;
-    case "telegram":
+    case 'telegram':
       return Send;
-    case "linkedin":
+    case 'linkedin':
       return Linkedin;
-    case "twitter":
+    case 'twitter':
       return Twitter;
-    case "website":
+    case 'website':
       return Globe;
     default:
       return Globe;
@@ -27,16 +28,16 @@ const getSocialIcon = (platform: string) => {
 
 const getSocialUrl = (platform: string, username: string) => {
   switch (platform) {
-    case "github":
+    case 'github':
       return `https://github.com/${username}`;
-    case "telegram":
+    case 'telegram':
       return `https://t.me/${username}`;
-    case "linkedin":
+    case 'linkedin':
       return `https://linkedin.com/in/${username}`;
-    case "twitter":
+    case 'twitter':
       return `https://twitter.com/${username}`;
-    case "website":
-      return username.startsWith("http") ? username : `https://${username}`;
+    case 'website':
+      return username.startsWith('http') ? username : `https://${username}`;
     default:
       return username;
   }
@@ -48,33 +49,33 @@ export function ModernTemplate({ data }: ModernTemplateProps) {
 
   return (
     <div
-      className="bg-white text-gray-900 font-sans"
-      data-testid="modern-template"
+      className='bg-white font-sans text-gray-900'
+      data-testid='modern-template'
     >
       {/* Header */}
-      <div className="text-center mb-12">
+      <div className='mb-12 text-center'>
         {personalInfo.photo && (
-          <img
-            src={personalInfo.photo || "/placeholder.svg"}
-            alt="Profile"
-            className="w-24 h-24 rounded-full mx-auto mb-4 object-cover"
+          <Image
+            src={personalInfo.photo || '/placeholder.svg'}
+            alt='Profile'
+            className='mx-auto mb-4 size-24 rounded-full object-cover'
           />
         )}
-        <h1 className="text-4xl font-light mb-2">
-          {personalInfo.name || "Your Name"}
+        <h1 className='mb-2 text-4xl font-light'>
+          {personalInfo.name || 'Your Name'}
         </h1>
         {personalInfo.jobTitle && (
-          <h2 className="text-xl text-gray-600 mb-4">
+          <h2 className='mb-4 text-xl text-gray-600'>
             {personalInfo.jobTitle}
           </h2>
         )}
-        <div className="flex justify-center items-center gap-4 text-gray-600 text-sm flex-wrap">
+        <div className='flex flex-wrap items-center justify-center gap-4 text-sm text-gray-600'>
           {personalInfo.email && (
             <a
               href={`mailto:${personalInfo.email}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-blue-600 hover:text-blue-800 text-sm"
+              target='_blank'
+              rel='noopener noreferrer'
+              className='text-sm text-blue-600 hover:text-blue-800'
             >
               {personalInfo.email}
             </a>
@@ -83,9 +84,9 @@ export function ModernTemplate({ data }: ModernTemplateProps) {
           {personalInfo.phone && (
             <a
               href={`tel:${personalInfo.phone}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-blue-600 hover:text-blue-800 text-sm"
+              target='_blank'
+              rel='noopener noreferrer'
+              className='text-sm text-blue-600 hover:text-blue-800'
             >
               {personalInfo.phone}
             </a>
@@ -96,18 +97,18 @@ export function ModernTemplate({ data }: ModernTemplateProps) {
 
         {/* Social Links */}
         {personalInfo.socialLinks && personalInfo.socialLinks.length > 0 && (
-          <div className="flex justify-center items-center gap-4 mt-4">
+          <div className='mt-4 flex items-center justify-center gap-4'>
             {personalInfo.socialLinks.map((link, index) => {
               const Icon = getSocialIcon(link.platform);
               return (
                 <a
                   key={index}
                   href={getSocialUrl(link.platform, link.username)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-1 text-blue-600 hover:text-blue-800 text-sm"
+                  target='_blank'
+                  rel='noopener noreferrer'
+                  className='flex items-center gap-1 text-sm text-blue-600 hover:text-blue-800'
                 >
-                  <Icon className="h-4 w-4" />
+                  <Icon className='size-4' />
                   {link.username}
                 </a>
               );
@@ -118,11 +119,11 @@ export function ModernTemplate({ data }: ModernTemplateProps) {
 
       {/* Summary */}
       {personalInfo.summary && (
-        <div className="mb-10">
-          <h2 className="text-xl font-light mb-4 text-gray-800">
-            {t("personalInfo.aboutMe")}
+        <div className='mb-10'>
+          <h2 className='mb-4 text-xl font-light text-gray-800'>
+            {t('personalInfo.aboutMe')}
           </h2>
-          <p className="text-gray-700 leading-relaxed">
+          <p className='leading-relaxed text-gray-700'>
             {personalInfo.summary}
           </p>
         </div>
@@ -130,44 +131,44 @@ export function ModernTemplate({ data }: ModernTemplateProps) {
 
       {/* Experience */}
       {experience.some((exp) => exp.company || exp.position) && (
-        <div className="mb-10">
-          <h2 className="text-xl font-light mb-6 text-gray-800">
-            {t("experience.title")}
+        <div className='mb-10'>
+          <h2 className='mb-6 text-xl font-light text-gray-800'>
+            {t('experience.title')}
           </h2>
-          <div className="space-y-8">
+          <div className='space-y-8'>
             {experience.map((exp, index) => (
               <div
                 key={index}
-                className={exp.company || exp.position ? "" : "hidden"}
+                className={exp.company || exp.position ? '' : 'hidden'}
               >
-                <div className="flex justify-between items-start mb-3">
+                <div className='mb-3 flex items-start justify-between'>
                   <div>
-                    <h3 className="text-lg font-medium">
-                      {exp.position || t("experience.position")}
+                    <h3 className='text-lg font-medium'>
+                      {exp.position || t('experience.position')}
                     </h3>
-                    <p className="text-gray-600">
-                      {exp.company || t("experience.company")}
-                      {exp.location ? ` • ${exp.location}` : ""}
+                    <p className='text-gray-600'>
+                      {exp.company || t('experience.company')}
+                      {exp.location ? ` • ${exp.location}` : ''}
                     </p>
                   </div>
                   {exp.startDate && (
-                    <div className="text-gray-500 text-sm">
-                      {exp.startDate} -{" "}
-                      {exp.current ? t("experience.present") : exp.endDate}
+                    <div className='text-sm text-gray-500'>
+                      {exp.startDate} -{' '}
+                      {exp.current ? t('experience.present') : exp.endDate}
                     </div>
                   )}
                 </div>
                 {exp.description && (
-                  <p className="text-gray-700 leading-relaxed">
+                  <p className='leading-relaxed text-gray-700'>
                     {exp.description}
                   </p>
                 )}
                 {exp.achievements && (
-                  <div className="mt-3">
-                    <h4 className="font-medium text-sm mb-2">Achievements:</h4>
-                    <ul className="text-gray-700 text-sm leading-relaxed list-disc ml-4">
+                  <div className='mt-3'>
+                    <h4 className='mb-2 text-sm font-medium'>Achievements:</h4>
+                    <ul className='ml-4 list-disc text-sm leading-relaxed text-gray-700'>
                       {exp.achievements
-                        .split("\n")
+                        .split('\n')
                         .filter((line) => line.trim())
                         .map((achievement, i) => (
                           <li key={i}>{achievement.trim()}</li>
@@ -177,9 +178,9 @@ export function ModernTemplate({ data }: ModernTemplateProps) {
                 )}
 
                 {exp.techStack && (
-                  <div className="mt-3">
-                    <h4 className="font-medium text-sm mb-2">Technologies:</h4>
-                    <p className="text-gray-700 text-sm">{exp.techStack}</p>
+                  <div className='mt-3'>
+                    <h4 className='mb-2 text-sm font-medium'>Technologies:</h4>
+                    <p className='text-sm text-gray-700'>{exp.techStack}</p>
                   </div>
                 )}
               </div>
@@ -190,34 +191,34 @@ export function ModernTemplate({ data }: ModernTemplateProps) {
 
       {/* Education */}
       {education.some((edu) => edu.institution || edu.degree) && (
-        <div className="mb-10">
-          <h2 className="text-xl font-light mb-6 text-gray-800">
-            {t("education.title")}
+        <div className='mb-10'>
+          <h2 className='mb-6 text-xl font-light text-gray-800'>
+            {t('education.title')}
           </h2>
-          <div className="space-y-4">
+          <div className='space-y-4'>
             {education.map((edu, index) => (
               <div
                 key={index}
-                className={edu.institution || edu.degree ? "" : "hidden"}
+                className={edu.institution || edu.degree ? '' : 'hidden'}
               >
-                <div className="flex justify-between items-start">
+                <div className='flex items-start justify-between'>
                   <div>
-                    <h3 className="font-medium">
-                      {edu.degree || t("education.degree")}
-                      {edu.fieldOfStudy ? ` in ${edu.fieldOfStudy}` : ""}
+                    <h3 className='font-medium'>
+                      {edu.degree || t('education.degree')}
+                      {edu.fieldOfStudy ? ` in ${edu.fieldOfStudy}` : ''}
                     </h3>
-                    <p className="text-gray-600">
-                      {edu.institution || t("education.institution")}
+                    <p className='text-gray-600'>
+                      {edu.institution || t('education.institution')}
                     </p>
                   </div>
                   {edu.startDate && (
-                    <div className="text-gray-500 text-sm">
-                      {edu.startDate} - {edu.endDate || t("experience.present")}
+                    <div className='text-sm text-gray-500'>
+                      {edu.startDate} - {edu.endDate || t('experience.present')}
                     </div>
                   )}
                 </div>
                 {edu.description && (
-                  <p className="text-gray-700 text-sm mt-1">
+                  <p className='mt-1 text-sm text-gray-700'>
                     {edu.description}
                   </p>
                 )}
@@ -230,14 +231,14 @@ export function ModernTemplate({ data }: ModernTemplateProps) {
       {/* Skills */}
       {skills.length > 0 && (
         <div>
-          <h2 className="text-xl font-light mb-6 text-gray-800">
-            {t("skills.title")}
+          <h2 className='mb-6 text-xl font-light text-gray-800'>
+            {t('skills.title')}
           </h2>
-          <div className="flex flex-wrap gap-2">
+          <div className='flex flex-wrap gap-2'>
             {skills.map((skill, index) => (
               <span
                 key={index}
-                className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm"
+                className='rounded-full bg-gray-100 px-3 py-1 text-sm text-gray-700'
               >
                 {skill}
               </span>

@@ -1,8 +1,8 @@
-import { LocaleProvider } from "@/components/locale/locale-provider";
-import { ThemeProvider } from "@/components/theme/theme-provider";
-import { render, RenderOptions } from "@testing-library/react";
-import React, { ReactElement, ReactNode } from "react";
-import { vi } from "vitest";
+import { LocaleProvider } from '@/components/locale/locale-provider';
+import { ThemeProvider } from '@/components/theme/theme-provider';
+import { render, RenderOptions } from '@testing-library/react';
+import React, { ReactElement, ReactNode } from 'react';
+import { vi } from 'vitest';
 
 // Mock router object that simulates Next.js router functionality
 export const mockRouter = {
@@ -12,7 +12,7 @@ export const mockRouter = {
   back: vi.fn(),
   forward: vi.fn(),
   refresh: vi.fn(),
-  pathname: "/",
+  pathname: '/',
   query: {},
 };
 
@@ -56,8 +56,8 @@ const AllTheProviders = ({ children }: { children: React.ReactNode }) => {
   return (
     <LocaleProvider>
       <ThemeProvider
-        attribute="class"
-        defaultTheme="system"
+        attribute='class'
+        defaultTheme='system'
         enableSystem
         disableTransitionOnChange
       >
@@ -69,8 +69,8 @@ const AllTheProviders = ({ children }: { children: React.ReactNode }) => {
 
 const customRender = (
   ui: ReactElement,
-  options?: Omit<RenderOptions, "wrapper">
+  options?: Omit<RenderOptions, 'wrapper'>,
 ) => render(ui, { wrapper: AllTheProviders, ...options });
 
-export * from "@testing-library/react";
+export * from '@testing-library/react';
 export { customRender as render };

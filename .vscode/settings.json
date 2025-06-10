@@ -1,6 +1,4 @@
 {
-    "cSpell.words": [
-        "mockbase",
-        "sonner"
-    ]
+  "cSpell.words": ["mockbase", "sonner"],
+  "typescript.tsdk": "node_modules/typescript/lib"
 }

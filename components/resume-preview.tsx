@@ -1,22 +1,20 @@
-"use client";
+'use client';
 
-import type { ResumeData } from "./resume-builder";
-import { ClassicTemplate } from "./templates/classic-template";
-import { ModernTemplate } from "./templates/modern-template";
-import { ProfessionalTemplate } from "./templates/professional-template";
-import { CompactTemplate } from "./templates/compact-template";
-import { Button } from "./ui/button";
-import { useRef } from "react";
-import { toast } from "sonner";
+import type { ResumeData } from './resume-builder';
+import { ClassicTemplate } from './templates/classic-template';
+import { ModernTemplate } from './templates/modern-template';
+import { ProfessionalTemplate } from './templates/professional-template';
+import { CompactTemplate } from './templates/compact-template';
+import { useRef } from 'react';
 
-interface ResumePreviewProps {
+export interface ResumePreviewProps {
   data: ResumeData;
-  template?: "classic" | "modern" | "professional" | "compact";
+  template?: 'classic' | 'modern' | 'professional' | 'compact';
 }
 
 export function ResumePreview({
   data,
-  template = "compact",
+  template = 'compact',
 }: ResumePreviewProps) {
   const resumeRef = useRef<HTMLDivElement>(null);
   const { personalInfo, education, experience, skills } = data;
@@ -29,7 +27,7 @@ export function ResumePreview({
 
   if (!hasPersonalInfo && !hasEducation && !hasExperience && !hasSkills) {
     return (
-      <div className="text-center py-10 text-muted-foreground">
+      <div className='py-10 text-center text-muted-foreground'>
         <p>Start filling out the form to see your resume preview here.</p>
       </div>
     );
@@ -37,20 +35,20 @@ export function ResumePreview({
 
   const renderTemplate = () => {
     switch (template) {
-      case "modern":
+      case 'modern':
         return <ModernTemplate data={data} />;
-      case "professional":
+      case 'professional':
         return <ProfessionalTemplate data={data} />;
-      case "compact":
+      case 'compact':
         return <CompactTemplate data={data} />;
-      case "classic":
+      case 'classic':
       default:
         return <ClassicTemplate data={data} />;
     }
   };
 
   return (
-    <div id="resume-preview-export" ref={resumeRef}>
+    <div id='resume-preview-export' ref={resumeRef}>
       {renderTemplate()}
     </div>
   );
