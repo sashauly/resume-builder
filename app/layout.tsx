@@ -14,7 +14,18 @@ export const metadata: Metadata = {
   title: 'Resume Builder',
   description: 'Create professional resumes easily',
   manifest: '/manifest.json',
-  generator: 'v0.dev',
+  icons: [
+    './icons/icon-48x48.png',
+    './icons/icon-72x72.png',
+    './icons/icon-96x96.png',
+    './icons/icon-128x128.png',
+    './icons/icon-144x144.png',
+    './icons/icon-152x152.png',
+    './icons/icon-192x192.png',
+    './icons/icon-256x256.png',
+    './icons/icon-384x384.png',
+    './icons/icon-512x512.png',
+  ],
 };
 
 export const viewport: Viewport = {
@@ -32,9 +43,13 @@ export default function RootLayout({
   return (
     <html lang='en' suppressHydrationWarning>
       <head>
-        {/* <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" /> */}
-        {/* <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" /> */}
-        {/* <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" /> */}
+        <meta name='apple-mobile-web-app-title' content='Resbu' />
+        <link rel='icon' href='/favicon.ico' sizes='48x48' />
+        <link
+          rel='apple-touch-icon'
+          href='icons/apple-touch-icon-180x180.png'
+          sizes='180x180'
+        />
       </head>
       <body className={inter.className} suppressHydrationWarning>
         <LocaleProvider>

@@ -16,8 +16,9 @@ export function LocaleToggle() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant='ghost' size='icon'>
+        <Button variant='outline' size='sm'>
           <Globe className='size-[1.2rem]' />
+          <span>{locale}</span>
           <span className='sr-only'>Toggle language</span>
         </Button>
       </DropdownMenuTrigger>

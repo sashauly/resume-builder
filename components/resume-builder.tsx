@@ -27,6 +27,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 import FormatSelector from './format-selector';
 import { Resume } from './home-content';
+import { v4 as uuidv4 } from 'uuid';
 
 export type SocialLink = {
   platform: string;
@@ -124,7 +125,6 @@ export function ResumeBuilder() {
     'html',
   );
 
-  // Load resume data on mount or when resumeId changes
   useEffect(() => {
     if (resumeId) {
       try {
@@ -147,7 +147,6 @@ export function ResumeBuilder() {
     }
   }, [resumeId]);
 
-  // Memoized update functions to prevent unnecessary re-renders
   const updatePersonalInfo = useCallback(
     (personalInfo: ResumeData['personalInfo']) => {
       setResumeData((prev) => ({ ...prev, personalInfo }));
@@ -178,7 +177,7 @@ export function ResumeBuilder() {
     setIsExporting(true);
 
     try {
-      await exportResume(exportFormat, resumeName, locale, resumeData);
+      await exportResume({ exportFormat, resumeName, locale, resumeData });
 
       toast.success(t('export.success'), {
         description: `${resumeName || 'Resume'}.${exportFormat}`,
@@ -193,7 +192,6 @@ export function ResumeBuilder() {
 
   const handleSave = useCallback(() => {
     if (currentResumeId) {
-      // Update existing resume
       try {
         const savedResumes = localStorage.getItem('savedResumes');
         if (savedResumes) {
@@ -205,6 +203,7 @@ export function ResumeBuilder() {
                 data: resumeData,
                 name: resumeName,
                 template: selectedTemplate,
+                updatedAt: new Date().toISOString(),
               };
             }
             return r;
@@ -218,7 +217,6 @@ export function ResumeBuilder() {
         console.error('Failed to save resume:', error);
       }
     } else {
-      // Show save dialog for new resume
       setSaveDialogOpen(true);
     }
   }, [currentResumeId, resumeData, resumeName, selectedTemplate, t]);
@@ -233,13 +231,14 @@ export function ResumeBuilder() {
     }
 
     try {
-      const newResumeId = Date.now().toString();
+      const newResumeId = uuidv4();
       const newResume = {
         id: newResumeId,
         name: resumeName,
         data: resumeData,
         template: selectedTemplate,
         createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
       };
 
       const savedResumes = localStorage.getItem('savedResumes');
@@ -256,7 +255,6 @@ export function ResumeBuilder() {
         description: t('builder.resumeSavedDesc'),
       });
 
-      // Redirect to the edit URL
       router.push(`/builder?id=${newResumeId}`);
     } catch (error) {
       console.error('Failed to save resume:', error);
@@ -266,7 +264,6 @@ export function ResumeBuilder() {
     }
   }, [resumeName, resumeData, selectedTemplate, router, t]);
 
-  // Memoized template change handler
   const handleTemplateChange = useCallback(
     (template: 'classic' | 'modern' | 'professional' | 'compact') => {
       setSelectedTemplate(template);
@@ -274,14 +271,13 @@ export function ResumeBuilder() {
     [],
   );
 
-  // Memoized save button text
   const saveButtonText = useMemo(() => {
     return currentResumeId ? t('builder.save') : t('builder.save');
   }, [currentResumeId, t]);
 
   return (
     <div className='space-y-6'>
-      <div className='flex items-center justify-between'>
+      <div className='flex flex-col items-center justify-between gap-2 md:flex-row'>
         <div>
           <h1 className='text-3xl font-bold'>{t('builder.title')}</h1>
           <p className='text-muted-foreground'>{t('builder.subtitle')}</p>
@@ -301,46 +297,40 @@ export function ResumeBuilder() {
       </div>
 
       <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
-        <Tabs value={activeTab} onValueChange={setActiveTab} className='w-full'>
-          <TabsList className='grid w-full grid-cols-5 text-xs sm:text-sm'>
-            <TabsTrigger value='personal' className='px-1 sm:px-3'>
-              {t('builder.personal')}
-            </TabsTrigger>
-            <TabsTrigger value='education' className='px-1 sm:px-3'>
+        <Tabs value={activeTab} onValueChange={setActiveTab}>
+          <TabsList className='grid h-fit grid-cols-2 gap-2 md:flex-row md:gap-0 lg:flex'>
+            <TabsTrigger value='personal'>{t('builder.personal')}</TabsTrigger>
+            <TabsTrigger value='education'>
               {t('builder.education')}
             </TabsTrigger>
-            <TabsTrigger value='experience' className='px-1 sm:px-3'>
+            <TabsTrigger value='experience'>
               {t('builder.experience')}
             </TabsTrigger>
-            <TabsTrigger value='skills' className='px-1 sm:px-3'>
-              {t('builder.skills')}
-            </TabsTrigger>
-            <TabsTrigger value='preview' className='px-1 sm:px-3'>
-              {t('builder.preview')}
-            </TabsTrigger>
+            <TabsTrigger value='skills'>{t('builder.skills')}</TabsTrigger>
+            <TabsTrigger value='preview'>{t('builder.preview')}</TabsTrigger>
           </TabsList>
-          <TabsContent value='personal' className='mt-6'>
+          <TabsContent value='personal'>
             <PersonalInfoForm
               initialData={resumeData.personalInfo}
               onSave={updatePersonalInfo}
             />
           </TabsContent>
-          <TabsContent value='education' className='mt-6'>
+          <TabsContent value='education'>
             <EducationForm
               initialData={resumeData.education}
               onSave={updateEducation}
             />
           </TabsContent>
-          <TabsContent value='experience' className='mt-6'>
+          <TabsContent value='experience'>
             <ExperienceForm
               initialData={resumeData.experience}
               onSave={updateExperience}
             />
           </TabsContent>
-          <TabsContent value='skills' className='mt-6'>
+          <TabsContent value='skills'>
             <SkillsForm initialData={resumeData.skills} onSave={updateSkills} />
           </TabsContent>
-          <TabsContent value='preview' className='mt-6'>
+          <TabsContent value='preview'>
             <div className='space-y-4'>
               <TemplateSelector
                 selectedTemplate={selectedTemplate}

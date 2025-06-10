@@ -11,7 +11,7 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import Link from 'next/link';
-import { Plus, Edit, Trash2, Eye, Download } from 'lucide-react';
+import { Plus, Edit, Trash2, Eye, Download, Import } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { ResumePreview } from '@/components/resume-preview';
@@ -34,12 +34,15 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import { v4 as uuidv4 } from 'uuid';
 
 export interface Resume {
   id: string;
   name: string;
   data: ResumeData;
   template: string;
+  createdAt: string;
+  updatedAt?: string;
 }
 
 export function HomeContent() {
@@ -51,7 +54,6 @@ export function HomeContent() {
   const [exportResume, setExportResume] = useState<Resume | null>(null);
 
   useEffect(() => {
-    // Load saved resumes from localStorage
     const loadResumes = () => {
       try {
         const savedResumes = localStorage.getItem('savedResumes');
@@ -65,6 +67,18 @@ export function HomeContent() {
 
     loadResumes();
   }, []);
+
+  useEffect(() => {
+    if (resumes.length > 0) {
+      try {
+        localStorage.setItem('savedResumes', JSON.stringify(resumes));
+      } catch (error) {
+        console.error('Failed to save resumes:', error);
+      }
+    } else if (localStorage.getItem('savedResumes')) {
+      localStorage.removeItem('savedResumes');
+    }
+  }, [resumes]);
 
   const handleDelete = (id: string) => {
     setDeleteId(id);
@@ -97,14 +111,89 @@ export function HomeContent() {
     setExportResume(resume);
   };
 
+  const addResume = (resumeData: ResumeData) => {
+    const newResume: Resume = {
+      id: uuidv4(),
+      name: resumeData.personalInfo.name || 'Untitled Resume',
+      data: resumeData,
+      template: 'compact',
+      createdAt: new Date().toISOString(),
+    };
+
+    setResumes((prevResumes) => {
+      const updatedResumes = [...prevResumes, newResume];
+      return updatedResumes;
+    });
+
+    return newResume.id;
+  };
+
+  const handleImport = () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'application/json';
+    input.style.display = 'none';
+    document.body.appendChild(input);
+
+    input.onchange = async (e) => {
+      if (!e.target) {
+        return;
+      }
+      const file = (e.target as HTMLInputElement).files?.[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const result = e.target?.result as string;
+          try {
+            const resumeData: ResumeData = JSON.parse(result);
+
+            if (
+              !resumeData ||
+              typeof resumeData !== 'object' ||
+              !resumeData.personalInfo
+            ) {
+              throw new Error('Invalid resume data format.');
+            }
+
+            const newResumeId = addResume(resumeData);
+            toast.success(t('common.resumeImported'), {
+              description: t('common.resumeImportedDesc'),
+            });
+            router.push(`/builder?id=${newResumeId}`);
+          } catch (error) {
+            console.error('Failed to import resume:', error);
+            toast.error(t('common.errorImportingResume'), {
+              description:
+                error instanceof Error
+                  ? error.message
+                  : 'Please ensure the file is a valid JSON resume.',
+            });
+          } finally {
+            document.body.removeChild(input);
+          }
+        };
+        reader.onerror = () => {
+          toast.error(t('common.errorReadingFile'), {
+            description: t('common.errorReadingFileDesc'),
+          });
+          document.body.removeChild(input);
+        };
+        reader.readAsText(file);
+      } else {
+        document.body.removeChild(input);
+      }
+    };
+    input.click();
+  };
+
   return (
-    <div className='space-y-4'>
+    <>
       <div className='space-y-2 text-center'>
         <h1 className='text-3xl font-bold'>{t('home.title')}</h1>
         <p className='text-muted-foreground'>{t('home.subtitle')}</p>
       </div>
 
-      <div className='container mx-auto space-y-2 px-4 py-6 md:px-6'>
+      <div className='container mx-auto space-y-2 p-4 md:px-6'>
         {resumes.length === 0 ? (
           <div className='rounded-lg border bg-muted/30 py-12 text-center'>
             <h2 className='mb-2 text-lg font-medium'>
@@ -114,20 +203,41 @@ export function HomeContent() {
               {t('home.createResumeDesc')}
             </p>
 
-            <Button asChild>
-              <Link href='/builder'>{t('home.createButton')}</Link>
-            </Button>
-          </div>
-        ) : (
-          <div className='space-y-6'>
-            <div className='flex items-center justify-between'>
-              <h2 className='text-2xl font-semibold'>{t('home.myResumes')}</h2>
+            <div className='flex flex-col items-center justify-center gap-2 md:flex-row'>
               <Button asChild>
                 <Link href='/builder'>
                   <Plus className='mr-2 size-4' />
                   {t('home.createButton')}
                 </Link>
               </Button>
+
+              <Button asChild variant='outline' onClick={handleImport}>
+                <div>
+                  <Import className='mr-2 size-4' />
+                  {t('home.importButton')}
+                </div>
+              </Button>
+            </div>
+          </div>
+        ) : (
+          <div className='space-y-6'>
+            <div className='flex flex-col items-center justify-between gap-2 md:flex-row'>
+              <h2 className='text-2xl font-semibold'>{t('home.myResumes')}</h2>
+              <div className='flex flex-col items-center gap-2 md:flex-row'>
+                <Button asChild>
+                  <Link href='/builder'>
+                    <Plus className='mr-2 size-4' />
+                    {t('home.createButton')}
+                  </Link>
+                </Button>
+
+                <Button asChild variant='outline' onClick={handleImport}>
+                  <div>
+                    <Import className='mr-2 size-4' />
+                    {t('home.importButton')}
+                  </div>
+                </Button>
+              </div>
             </div>
 
             <div className='grid gap-6 md:grid-cols-2 lg:grid-cols-3'>
@@ -287,6 +397,6 @@ export function HomeContent() {
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 }

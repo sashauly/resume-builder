@@ -1,9 +1,0 @@
-{
-  "name": "Resume Builder",
-  "short_name": "Resume",
-  "description": "Create professional resumes easily",
-  "start_url": "/",
-  "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#ffffff"
-}
