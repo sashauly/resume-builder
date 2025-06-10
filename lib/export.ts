@@ -1,6 +1,13 @@
 import { ResumeData } from '@/components/resume-builder';
 import html2canvas from 'html2canvas';
 
+export interface ExportData {
+  resumeData: ResumeData;
+  resumeName: string;
+  locale: string;
+  exportFormat: 'image' | 'word' | 'html' | 'json';
+}
+
 // Helper function to clean up HTML for export
 const cleanHtmlForExport = (htmlString: string): string => {
   // Create a temporary div to parse the HTML string
@@ -28,12 +35,20 @@ const cleanHtmlForExport = (htmlString: string): string => {
   return bodyContent.innerHTML;
 };
 
-export default async function exportResume(
-  exportFormat: string,
-  resumeName: string,
-  locale: string,
-  resumeData: ResumeData,
-) {
+export default async function exportResume(exportData: ExportData) {
+  const { resumeData, resumeName, locale, exportFormat } = exportData;
+
+  if (exportFormat === 'json') {
+    const json = JSON.stringify(resumeData, null, 2);
+    const blob = new Blob([json], { type: 'application/json' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `${resumeName || 'resume'}.json`;
+    link.click();
+    URL.revokeObjectURL(link.href);
+    return;
+  }
+
   // It's crucial to grab the *actual* rendered element.
   // The ResumePreview inside the dialog has the id="resume-preview-export"
   // because we passed it this ID.

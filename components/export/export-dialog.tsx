@@ -13,11 +13,11 @@ import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { useLocale } from '@/hooks/use-locale';
 import { useTranslation } from '@/hooks/use-translation';
-import { Code, Download, File, FileImage } from 'lucide-react';
+import { Code, Download, File, FileImage, FileJson } from 'lucide-react';
 import { Dispatch, SetStateAction, useState } from 'react';
 import { toast } from 'sonner';
 import type { ResumeData } from '../resume-builder';
-import exportResume from '@/lib/export';
+import exportResume, { ExportData } from '@/lib/export';
 
 interface ExportDialogProps {
   open: boolean;
@@ -38,9 +38,8 @@ export function ExportDialog({
   const { locale } = useLocale();
   const [isExporting, setIsExporting] = useState(false);
 
-  const [exportFormat, setExportFormat] = useState<'image' | 'word' | 'html'>(
-    'html',
-  );
+  const [exportFormat, setExportFormat] =
+    useState<ExportData['exportFormat']>('html');
 
   console.log(template);
 
@@ -48,7 +47,7 @@ export function ExportDialog({
     setIsExporting(true);
 
     try {
-      await exportResume(exportFormat, resumeName, locale, resumeData);
+      await exportResume({ exportFormat, resumeName, locale, resumeData });
 
       toast.success(t('export.success'), {
         description: `${resumeName || 'Resume'}.${exportFormat}`,
@@ -115,13 +114,12 @@ export function ExportFormat({
   defaultFormat = 'html',
   setDefaultFormat,
 }: {
-  defaultFormat?: 'image' | 'word' | 'html';
-  setDefaultFormat?: Dispatch<SetStateAction<'image' | 'word' | 'html'>>;
+  defaultFormat?: ExportData['exportFormat'];
+  setDefaultFormat?: Dispatch<SetStateAction<ExportData['exportFormat']>>;
 }) {
   const { t } = useTranslation();
-  const [exportFormat, setExportFormat] = useState<'image' | 'word' | 'html'>(
-    defaultFormat,
-  );
+  const [exportFormat, setExportFormat] =
+    useState<ExportData['exportFormat']>(defaultFormat);
 
   return (
     <>
@@ -130,9 +128,9 @@ export function ExportFormat({
         value={exportFormat}
         onValueChange={(value) => {
           if (setDefaultFormat) {
-            setDefaultFormat(value as 'image' | 'word' | 'html');
+            setDefaultFormat(value as ExportData['exportFormat']);
           }
-          setExportFormat(value as 'image' | 'word' | 'html');
+          setExportFormat(value as ExportData['exportFormat']);
         }}
       >
         <div className='space-y-3'>
@@ -151,7 +149,7 @@ export function ExportFormat({
 
           <div className='flex items-center space-x-3 rounded-lg border p-3'>
             <RadioGroupItem value='image' id='export-image' />
-            <FileImage className='size-5 text-blue-500' />
+            <FileImage className='size-5 text-green-500' />
             <Label htmlFor='export-image' className='flex-1'>
               <div>
                 <h3 className='font-medium'>{t('builder.exportImage')}</h3>
@@ -170,6 +168,19 @@ export function ExportFormat({
                 <h3 className='font-medium'>{t('builder.exportWord')}</h3>
                 <p className='text-sm text-muted-foreground'>
                   {t('export.wordDescription')}
+                </p>
+              </div>
+            </Label>
+          </div>
+
+          <div className='flex items-center space-x-3 rounded-lg border p-3'>
+            <RadioGroupItem value='json' id='export-json' />
+            <FileJson className='size-5 text-orange-500' />
+            <Label htmlFor='export-json' className='flex-1'>
+              <div>
+                <h3 className='font-medium'>{t('builder.exportJson')}</h3>
+                <p className='text-sm text-muted-foreground'>
+                  {t('export.jsonDescription')}
                 </p>
               </div>
             </Label>
