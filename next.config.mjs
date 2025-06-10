@@ -9,6 +9,14 @@ const BASE_PATH = '/resume-builder';
 
 const isProd = process.env.NODE_ENV === 'production';
 
+if (isProd) {
+  console.log('Running in production mode');
+  // Enable production-specific optimizations
+} else {
+  console.log('Running in development mode');
+  // Enable development-specific features
+}
+
 const nextConfig = withPWA({
   reactStrictMode: false,
   swcMinify: true,
