@@ -17,7 +17,6 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { ResumePreview } from "@/components/resume-preview";
 import { ExportDialog } from "@/components/export/export-dialog";
-import { PDFExporter } from "@/components/export/pdf-exporter";
 import type { ResumeData } from "@/components/resume-builder";
 import {
   AlertDialog,
@@ -100,88 +99,84 @@ export function HomeContent() {
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-4">
       <div className="text-center space-y-2">
         <h1 className="text-3xl font-bold">{t("home.title")}</h1>
         <p className="text-muted-foreground">{t("home.subtitle")}</p>
       </div>
 
-      {resumes.length === 0 ? (
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          <Card>
-            <CardHeader>
-              <CardTitle>{t("home.createResume")}</CardTitle>
-              <CardDescription>{t("home.createResumeDesc")}</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="flex items-center justify-center h-32">
-                <Plus className="h-12 w-12 text-muted-foreground" />
-              </div>
-            </CardContent>
-            <CardFooter>
-              <Button asChild className="w-full">
-                <Link href="/builder">{t("home.createButton")}</Link>
-              </Button>
-            </CardFooter>
-          </Card>
-        </div>
-      ) : (
-        <div className="space-y-6">
-          <div className="flex justify-between items-center">
-            <h2 className="text-2xl font-semibold">{t("home.myResumes")}</h2>
+      <div className="container mx-auto py-6 px-4 md:px-6 space-y-2">
+        {resumes.length === 0 ? (
+          <div className="text-center py-12 border rounded-lg bg-muted/30">
+            <h2 className="text-lg font-medium mb-2">
+              {t("home.createResume")}
+            </h2>
+            <p className="text-muted-foreground mb-4">
+              {t("home.createResumeDesc")}
+            </p>
+
             <Button asChild>
-              <Link href="/builder">
-                <Plus className="mr-2 h-4 w-4" />
-                {t("home.createButton")}
-              </Link>
+              <Link href="/builder">{t("home.createButton")}</Link>
             </Button>
           </div>
+        ) : (
+          <div className="space-y-6">
+            <div className="flex justify-between items-center">
+              <h2 className="text-2xl font-semibold">{t("home.myResumes")}</h2>
+              <Button asChild>
+                <Link href="/builder">
+                  <Plus className="mr-2 h-4 w-4" />
+                  {t("home.createButton")}
+                </Link>
+              </Button>
+            </div>
 
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {resumes.map((resume) => (
-              <Card key={resume.id} className="overflow-hidden">
-                <CardHeader>
-                  <div className="flex justify-between">
-                    <CardTitle className="text-lg">{resume.name}</CardTitle>
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {resumes.map((resume) => (
+                <Card key={resume.id} className="overflow-hidden">
+                  <CardHeader>
+                    <div className="flex justify-between">
+                      <CardTitle className="text-lg">{resume.name}</CardTitle>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handlePreview(resume)}
+                      >
+                        <Eye className="mr-2 h-4 w-4" />
+                        {t("common.preview")}
+                      </Button>
+                    </div>
+                    <CardDescription>
+                      {resume.data.personalInfo.name || "No name"}
+                      {resume.data.personalInfo.jobTitle && (
+                        <span className="block text-sm text-muted-foreground">
+                          {resume.data.personalInfo.jobTitle}
+                        </span>
+                      )}
+                    </CardDescription>
+                  </CardHeader>
+                  <CardFooter className="flex justify-end gap-2">
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={() => handlePreview(resume)}
+                      onClick={() => handleEdit(resume.id)}
                     >
-                      <Eye className="mr-2 h-4 w-4" />
-                      {t("common.preview")}
+                      <Edit className="h-4 w-4" />
                     </Button>
-                  </div>
-                  <CardDescription>
-                    {resume.data.personalInfo.name || "No name"}
-                    {resume.data.personalInfo.jobTitle && (
-                      <span className="block text-sm text-muted-foreground">
-                        {resume.data.personalInfo.jobTitle}
-                      </span>
-                    )}
-                  </CardDescription>
-                </CardHeader>
-                <CardFooter className="flex justify-end gap-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => handleEdit(resume.id)}
-                  >
-                    <Edit className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    variant="destructive"
-                    size="sm"
-                    onClick={() => handleDelete(resume.id)}
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                </CardFooter>
-              </Card>
-            ))}
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      onClick={() => handleDelete(resume.id)}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </CardFooter>
+                </Card>
+              ))}
+            </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
 
       <AlertDialog
         open={!!deleteId}

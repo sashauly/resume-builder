@@ -37,7 +37,7 @@ export function SettingsContent() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <div>
         <h1 className="text-3xl font-bold">{t("settings.title")}</h1>
         <p className="text-muted-foreground">{t("settings.subtitle")}</p>
@@ -63,16 +63,16 @@ export function SettingsContent() {
                   }}
                 >
                   <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="system" id="theme-system" />
+                    <Label htmlFor="theme-system">{t("settings.system")}</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
                     <RadioGroupItem value="light" id="theme-light" />
                     <Label htmlFor="theme-light">{t("settings.light")}</Label>
                   </div>
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="dark" id="theme-dark" />
                     <Label htmlFor="theme-dark">{t("settings.dark")}</Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="system" id="theme-system" />
-                    <Label htmlFor="theme-system">{t("settings.system")}</Label>
                   </div>
                 </RadioGroup>
               </div>
@@ -103,23 +103,6 @@ export function SettingsContent() {
                   <Label htmlFor="lang-ru">Русский</Label>
                 </div>
               </RadioGroup>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>{t("settings.about")}</CardTitle>
-            <CardDescription>{t("settings.aboutDesc")}</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-2">
-              <p>
-                <strong>{t("settings.version")}:</strong> 1.0.0
-              </p>
-              <p>
-                <strong>{t("settings.pwa")}:</strong> {t("settings.enabled")}
-              </p>
             </div>
           </CardContent>
         </Card>
