@@ -10,10 +10,45 @@ import { MobileNavigation } from '@/components/navigation/mobile-navigation';
 
 const inter = Inter({ subsets: ['latin', 'cyrillic'] });
 
+const APP_NAME = 'Resume Builder';
+const APP_DEFAULT_TITLE = 'Resume Builder';
+const APP_TITLE_TEMPLATE = '%s - Resbu';
+const APP_DESCRIPTION = 'Create professional resumes easily';
+
 export const metadata: Metadata = {
-  title: 'Resume Builder',
-  description: 'Create professional resumes easily',
+  applicationName: APP_NAME,
+  title: {
+    default: APP_DEFAULT_TITLE,
+    template: APP_TITLE_TEMPLATE,
+  },
+  description: APP_DESCRIPTION,
   manifest: '/manifest.json',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: APP_DEFAULT_TITLE,
+    // startUpImage: [],
+  },
+  formatDetection: {
+    telephone: false,
+  },
+  openGraph: {
+    type: 'website',
+    siteName: APP_NAME,
+    title: {
+      default: APP_DEFAULT_TITLE,
+      template: APP_TITLE_TEMPLATE,
+    },
+    description: APP_DESCRIPTION,
+  },
+  twitter: {
+    card: 'summary',
+    title: {
+      default: APP_DEFAULT_TITLE,
+      template: APP_TITLE_TEMPLATE,
+    },
+    description: APP_DESCRIPTION,
+  },
   icons: [
     './icons/icon-48x48.png',
     './icons/icon-72x72.png',
@@ -45,10 +80,10 @@ export default function RootLayout({
       <head>
         <meta name='apple-mobile-web-app-title' content='Resbu' />
         <link rel='icon' href='/favicon.ico' sizes='48x48' />
-        <link
-          rel='apple-touch-icon'
-          href='icons/apple-touch-icon-180x180.png'
-          sizes='180x180'
+        <link rel='apple-touch-icon' href='icons/apple-touch-icon-180x180.png' sizes='180x180' />
+        <meta
+          name='viewport'
+          content='minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no, user-scalable=no, viewport-fit=cover'
         />
       </head>
       <body className={inter.className} suppressHydrationWarning>
