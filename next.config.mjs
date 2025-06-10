@@ -5,6 +5,8 @@ const withPWA = withPWAInit({
   dest: 'public',
 });
 
+const BASE_PATH = process.env.BASE_PATH || '/resume-builder/';
+
 const isProd = process.env.NODE_ENV === 'production';
 
 const nextConfig = withPWA({
@@ -12,8 +14,8 @@ const nextConfig = withPWA({
   trailingSlash: true,
   swcMinify: true,
   output: 'export',
-  basePath: isProd ? process.env.PAGES_BASE_PATH : '',
-  assetPrefix: isProd ? process.env.PAGES_BASE_PATH : '',
+  basePath: isProd ? BASE_PATH : '',
+  assetPrefix: isProd ? BASE_PATH : '',
   disable: process.env.NODE_ENV === 'development',
   register: true,
   skipWaiting: true,
