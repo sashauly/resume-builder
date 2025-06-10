@@ -66,7 +66,7 @@
       "purpose": "maskable"
     }
   ],
-  "start_url": "/",
+  "start_url": "/resume-builder",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#ffffff"
