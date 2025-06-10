@@ -38,8 +38,7 @@
     "test": "vitest",
     "test:ui": "vitest --ui",
     "test:coverage": "vitest run --coverage",
-    "export": "next export",
-    "out": "next build && next export && touch ./out/.nojekyll",
+    "out": "next build && touch ./out/.nojekyll",
     "predeploy": "npm run out",
     "deploy": "npm run predeploy && gh-pages -d out --dotfiles"
   },
