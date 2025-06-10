@@ -5,7 +5,7 @@ const withPWA = withPWAInit({
   dest: 'public',
 });
 
-// const BASE_PATH = process.env.PAGES_BASE_PATH ?? '/resume-builder';
+const BASE_PATH = process.env.PAGES_BASE_PATH ?? '/resume-builder';
 
 const isProd = process.env.NODE_ENV === 'production';
 
@@ -18,31 +18,22 @@ if (isProd) {
 }
 
 const nextConfig = withPWA({
-  // reactStrictMode: false,
-  // swcMinify: true,
-  // output: 'export',
-  // basePath: '/resume-builder',
-  // assetPrefix: '/resume-builder/',
-  // disable: process.env.NODE_ENV === 'development',
-  // register: true,
-  // skipWaiting: true,
-  // eslint: {
-  //   ignoreDuringBuilds: true,
-  // },
-  // typescript: {
-  //   ignoreBuildErrors: true,
-  // },
-  // images: {
-  //   unoptimized: true,
-  // },
-  basePath: '/resume-builder',
+  reactStrictMode: false,
+  swcMinify: true,
   output: 'export',
-  reactStrictMode: true,
+  basePath: isProd ? BASE_PATH : '',
+  assetPrefix: isProd ? BASE_PATH : '',
+  disable: process.env.NODE_ENV === 'development',
+  register: true,
+  skipWaiting: true,
   eslint: {
     ignoreDuringBuilds: true,
   },
   typescript: {
     ignoreBuildErrors: true,
+  },
+  images: {
+    unoptimized: true,
   },
 });
 
