@@ -6,6 +6,7 @@ import { ModernTemplate } from './templates/modern-template';
 import { ProfessionalTemplate } from './templates/professional-template';
 import { CompactTemplate } from './templates/compact-template';
 import { useRef } from 'react';
+import { useTranslation } from '@/hooks/use-translation';
 
 export interface ResumePreviewProps {
   data: ResumeData;
@@ -16,6 +17,7 @@ export function ResumePreview({
   data,
   template = 'compact',
 }: ResumePreviewProps) {
+  const { t } = useTranslation();
   const resumeRef = useRef<HTMLDivElement>(null);
   const { personalInfo, education, experience, skills } = data;
 
@@ -28,7 +30,7 @@ export function ResumePreview({
   if (!hasPersonalInfo && !hasEducation && !hasExperience && !hasSkills) {
     return (
       <div className='py-10 text-center text-muted-foreground'>
-        <p>Start filling out the form to see your resume preview here.</p>
+        <p>{t('previewEmpty')}</p>
       </div>
     );
   }

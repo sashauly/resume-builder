@@ -19,6 +19,7 @@ export const translations: { en: Translations; ru: Translations } = {
       required: 'Required',
       optional: 'Optional',
       preview: 'Preview',
+      loading: 'Loading...',
       resumeImported: 'Resume imported successfully',
       resumeImportedDesc: 'Your resume has been imported successfully',
       errorImportingResume: 'Error importing resume',
@@ -66,6 +67,8 @@ export const translations: { en: Translations; ru: Translations } = {
       exportHtml: 'Export as HTML',
       exportJson: 'Export as JSON',
       exportOptions: 'Export Options',
+      previewEmpty:
+        'Start filling out the form to see your resume preview here.',
     },
     profile: {
       title: 'My Resumes',
@@ -242,6 +245,7 @@ export const translations: { en: Translations; ru: Translations } = {
       required: 'Обязательно',
       optional: 'Необязательно',
       preview: 'Просмотр',
+      loading: 'Загрузка...',
       resumeImported: 'Резюме импортировано успешно',
       resumeImportedDesc: 'Ваше резюме было успешно импортировано',
       errorImportingResume: 'Ошибка импорта резюме',
@@ -289,6 +293,8 @@ export const translations: { en: Translations; ru: Translations } = {
       exportHtml: 'Экспорт в HTML',
       exportJson: 'Экспорт в JSON',
       exportOptions: 'Опции Экспорта',
+      previewEmpty:
+        'Начните создавать ваше профессиональное резюме, чтобы посмотреть его предпросмотр.',
     },
     profile: {
       title: 'Мои Резюме',
