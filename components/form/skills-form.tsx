@@ -7,7 +7,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, FormProvider } from 'react-hook-form';
 import * as z from 'zod';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   FormControl,
   FormField,
@@ -43,8 +43,13 @@ export function SkillsForm({ initialData, onSave }: SkillsFormProps) {
   });
 
   function addSkill(skill: string) {
-    if (skill.trim() && !skills.includes(skill.trim())) {
-      setSkills([...skills, skill.trim()]);
+    const skillsToAdd = skill
+      .split(',')
+      .map((s) => s.trim())
+      .filter((s) => s && !skills.includes(s));
+
+    if (skillsToAdd.length > 0) {
+      setSkills([...skills, ...skillsToAdd]);
       form.reset();
     }
   }
@@ -75,7 +80,6 @@ export function SkillsForm({ initialData, onSave }: SkillsFormProps) {
     <Card>
       <CardHeader>
         <CardTitle>{t('skills.title')}</CardTitle>
-        <CardDescription>{t('skills.description')}</CardDescription>
       </CardHeader>
       <CardContent>
         <FormSchemaProvider schema={formSchema}>
@@ -88,23 +92,33 @@ export function SkillsForm({ initialData, onSave }: SkillsFormProps) {
                   <FormItem>
                     <FormLabel>{t('skills.addSkills')}</FormLabel>
                     <FormControl>
-                      <div className='flex space-x-2'>
-                        <Input
-                          placeholder={t('skills.skillPlaceholder')}
-                          {...field}
-                          onKeyDown={handleKeyDown}
-                        />
-                        <Button
-                          type='button'
-                          onClick={() => {
-                            const value = form.getValues().skill;
-                            if (value) {
-                              addSkill(value);
-                            }
-                          }}
-                        >
-                          {t('skills.addButton')}
-                        </Button>
+                      <div className='space-y-2'>
+                        <div className='text-muted-foreground text-sm'>{t('skills.inputHelp')}</div>
+                        <div className='flex space-x-2'>
+                          <Input
+                            placeholder={t('skills.skillPlaceholder')}
+                            {...field}
+                            onKeyDown={handleKeyDown}
+                            aria-label={t('skills.inputAriaLabel')}
+                            aria-describedby='skills-input-help'
+                            id='skills-input'
+                          />
+                          <Button
+                            type='button'
+                            onClick={() => {
+                              const value = form.getValues().skill;
+                              if (value) {
+                                addSkill(value);
+                              }
+                            }}
+                            aria-label={t('skills.addButtonAriaLabel')}
+                          >
+                            {t('skills.addButton')}
+                          </Button>
+                        </div>
+                        <p id='skills-input-help' className='text-muted-foreground text-sm'>
+                          {t('skills.inputInstructions')}
+                        </p>
                       </div>
                     </FormControl>
                     <FormMessage />
@@ -112,24 +126,26 @@ export function SkillsForm({ initialData, onSave }: SkillsFormProps) {
                 )}
               />
 
-              <div className='min-h-[100px] rounded-md border p-4'>
+              <div
+                className='min-h-[100px] rounded-md border p-4'
+                role='region'
+                aria-label={t('skills.skillsListAriaLabel')}
+              >
                 <div className='mb-2 text-sm font-medium'>{t('skills.yourSkills')}</div>
                 {skills.length === 0 ? (
                   <p className='text-muted-foreground text-sm'>{t('skills.noSkills')}</p>
                 ) : (
-                  <div className='flex flex-wrap gap-2'>
+                  <div className='flex flex-wrap gap-2' role='list'>
                     {skills.map((skill, index) => (
-                      <Badge key={index} variant='secondary' className='px-2 py-1'>
+                      <Badge key={index} variant='secondary' className='px-2 py-1' role='listitem'>
                         {skill}
                         <button
                           type='button'
                           onClick={() => removeSkill(skill)}
                           className='hover:text-destructive ml-1'
+                          aria-label={`${t('skills.removeSkillAriaLabel')} ${skill}`}
                         >
-                          <X className='size-3' />
-                          <span className='sr-only'>
-                            {t('skills.removeSkill')} {skill}
-                          </span>
+                          <X className='size-3' aria-hidden='true' />
                         </button>
                       </Badge>
                     ))}
