@@ -4,6 +4,15 @@ import { render, RenderOptions } from '@testing-library/react';
 import React, { ReactElement, ReactNode } from 'react';
 import { vi } from 'vitest';
 
+// Mock next-themes
+vi.mock('next-themes', () => ({
+  ThemeProvider: ({ children }: { children: ReactNode }) => <>{children}</>,
+  useTheme: () => ({
+    theme: 'light',
+    setTheme: vi.fn(),
+  }),
+}));
+
 export const mockRouter = {
   push: vi.fn(),
   replace: vi.fn(),
@@ -49,8 +58,8 @@ const AllTheProviders = ({ children }: { children: React.ReactNode }) => {
     <LocaleProvider>
       <ThemeProvider
         attribute='class'
-        defaultTheme='system'
-        enableSystem
+        defaultTheme='light'
+        enableSystem={false}
         disableTransitionOnChange
       >
         {children}
@@ -59,10 +68,8 @@ const AllTheProviders = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-const customRender = (
-  ui: ReactElement,
-  options?: Omit<RenderOptions, 'wrapper'>,
-) => render(ui, { wrapper: AllTheProviders, ...options });
+const customRender = (ui: ReactElement, options?: Omit<RenderOptions, 'wrapper'>) =>
+  render(ui, { wrapper: AllTheProviders, ...options });
 
 export * from '@testing-library/react';
 export { customRender as render };

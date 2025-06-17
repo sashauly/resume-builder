@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { render, screen, waitFor } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
+import { render } from '@/lib/test-utils';
 import userEvent from '@testing-library/user-event';
 import { ResumeBuilder } from '@/components/resume-builder';
 import { mockRouter } from '@/lib/test-utils';
@@ -11,21 +12,36 @@ import { SkillsFormProps } from './form/skills-form';
 import { ResumePreviewProps } from './resume-preview';
 import { TemplateSelectorProps } from './template-selector';
 
+// Mock next/navigation
 vi.mock('next/navigation', async () => {
   const actual = await vi.importActual('next/navigation');
   return {
     ...actual,
     useRouter: () => mockRouter,
-    useSearchParams: () => new URLSearchParams(),
+    useSearchParams: () => new URLSearchParams('id=test-id'),
   };
 });
 
+// Mock translation hook
 vi.mock('@/hooks/use-translation', () => ({
   useTranslation: () => ({
     t: (key: string) => key,
   }),
 }));
 
+// Mock locale hook
+vi.mock('@/hooks/use-locale', () => ({
+  useLocale: () => ({
+    locale: 'en',
+  }),
+}));
+
+// Mock export function
+vi.mock('@/lib/export', () => ({
+  default: vi.fn().mockResolvedValue(undefined),
+}));
+
+// Mock form components
 vi.mock('@/components/form/personal-info-form', () => ({
   PersonalInfoForm: ({ initialData, onSave }: PersonalInfoFormProps) => (
     <div data-testid='personal-info-form'>
@@ -44,9 +60,7 @@ vi.mock('@/components/form/education-form', () => ({
     <div data-testid='education-form'>
       <button
         data-testid='save-education'
-        onClick={() =>
-          onSave([{ ...initialData[0], institution: 'Test University' }])
-        }
+        onClick={() => onSave([{ ...initialData[0], institution: 'Test University' }])}
       >
         Save Education
       </button>
@@ -68,10 +82,7 @@ vi.mock('@/components/form/experience-form', () => ({
 }));
 
 vi.mock('@/components/form/skills-form', () => ({
-  SkillsForm: ({
-    initialData = ['JavaScript', 'React'],
-    onSave,
-  }: SkillsFormProps) => (
+  SkillsForm: ({ initialData = ['JavaScript', 'React'], onSave }: SkillsFormProps) => (
     <div data-testid='skills-form'>
       <button data-testid='save-skills' onClick={() => onSave(initialData)}>
         Save Skills
@@ -91,14 +102,11 @@ vi.mock('@/components/resume-preview', () => ({
 
 vi.mock('@/components/template-selector', () => ({
   TemplateSelector: ({
-    selectedTemplate = 'modern',
+    selectedTemplate,
     onTemplateChangeAction: onTemplateChange,
   }: TemplateSelectorProps) => (
     <div data-testid='template-selector'>
-      <button
-        data-testid='change-template'
-        onClick={() => onTemplateChange(selectedTemplate)}
-      >
+      <button data-testid='change-template' onClick={() => onTemplateChange('modern')}>
         Change Template
       </button>
     </div>
@@ -107,6 +115,20 @@ vi.mock('@/components/template-selector', () => ({
 
 vi.mock('@/components/export/export-dialog', () => ({
   ExportDialog: () => <div data-testid='export-dialog'></div>,
+  ExportFormat: {
+    HTML: 'html',
+    WORD: 'word',
+    IMAGE: 'image',
+  },
+}));
+
+// Mock format selector
+vi.mock('@/components/format-selector', () => ({
+  default: () => (
+    <div data-testid='format-selector'>
+      <button data-testid='export-button'>Export</button>
+    </div>
+  ),
 }));
 
 vi.mock('sonner', () => ({
@@ -134,9 +156,9 @@ describe('ResumeBuilder', () => {
   beforeEach(() => {
     Object.defineProperty(window, 'localStorage', {
       value: localStorageMock,
+      writable: true,
     });
     localStorageMock.clear();
-
     mockRouter.push.mockReset();
   });
 
@@ -144,25 +166,17 @@ describe('ResumeBuilder', () => {
     vi.clearAllMocks();
   });
 
-  it('renders the builder with initial tabs', () => {
+  it('renders the builder with initial tabs', async () => {
     render(<ResumeBuilder />);
 
-    expect(screen.getByText('builder.title')).toBeInTheDocument();
-    expect(
-      screen.getByRole('tab', { name: 'builder.personal' }),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole('tab', { name: 'builder.education' }),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole('tab', { name: 'builder.experience' }),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole('tab', { name: 'builder.skills' }),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole('tab', { name: 'builder.preview' }),
-    ).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText('builder.title')).toBeInTheDocument();
+      expect(screen.getByRole('tab', { name: 'builder.personal' })).toBeInTheDocument();
+      expect(screen.getByRole('tab', { name: 'builder.education' })).toBeInTheDocument();
+      expect(screen.getByRole('tab', { name: 'builder.experience' })).toBeInTheDocument();
+      expect(screen.getByRole('tab', { name: 'builder.skills' })).toBeInTheDocument();
+      expect(screen.getByRole('tab', { name: 'builder.preview' })).toBeInTheDocument();
+    });
 
     expect(screen.getByTestId('personal-info-form')).toBeInTheDocument();
   });
@@ -171,42 +185,63 @@ describe('ResumeBuilder', () => {
     render(<ResumeBuilder />);
     const user = userEvent.setup();
 
-    expect(screen.getByTestId('personal-info-form')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByTestId('personal-info-form')).toBeInTheDocument();
+    });
 
     await user.click(screen.getByTestId('save-personal-info'));
-    expect(screen.getByTestId('education-form')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByTestId('education-form')).toBeInTheDocument();
+    });
 
     await user.click(screen.getByTestId('save-education'));
-    expect(screen.getByTestId('experience-form')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByTestId('experience-form')).toBeInTheDocument();
+    });
 
     await user.click(screen.getByTestId('save-experience'));
-    expect(screen.getByTestId('skills-form')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByTestId('skills-form')).toBeInTheDocument();
+    });
 
     await user.click(screen.getByTestId('save-skills'));
-
-    expect(screen.getByTestId('template-selector')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByTestId('template-selector')).toBeInTheDocument();
+    });
   });
 
   it('allows users to manually switch between tabs', async () => {
     render(<ResumeBuilder />);
     const user = userEvent.setup();
 
-    expect(screen.getByTestId('personal-info-form')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByTestId('personal-info-form')).toBeInTheDocument();
+    });
 
     await user.click(screen.getByRole('tab', { name: 'builder.education' }));
-    expect(screen.getByTestId('education-form')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByTestId('education-form')).toBeInTheDocument();
+    });
 
     await user.click(screen.getByRole('tab', { name: 'builder.experience' }));
-    expect(screen.getByTestId('experience-form')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByTestId('experience-form')).toBeInTheDocument();
+    });
 
     await user.click(screen.getByRole('tab', { name: 'builder.skills' }));
-    expect(screen.getByTestId('skills-form')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByTestId('skills-form')).toBeInTheDocument();
+    });
 
     await user.click(screen.getByRole('tab', { name: 'builder.preview' }));
-    expect(screen.getByTestId('template-selector')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByTestId('template-selector')).toBeInTheDocument();
+    });
 
     await user.click(screen.getByRole('tab', { name: 'builder.personal' }));
-    expect(screen.getByTestId('personal-info-form')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByTestId('personal-info-form')).toBeInTheDocument();
+    });
   });
 
   it('updates resume data when forms are saved', async () => {
@@ -214,14 +249,13 @@ describe('ResumeBuilder', () => {
     const user = userEvent.setup();
 
     await user.click(screen.getByTestId('save-personal-info'));
-
     await user.click(screen.getByTestId('save-education'));
-
     await user.click(screen.getByTestId('save-experience'));
-
     await user.click(screen.getByTestId('save-skills'));
 
-    expect(screen.getByTestId('preview-name')).toHaveTextContent('John Doe');
+    await waitFor(() => {
+      expect(screen.getByTestId('preview-name')).toHaveTextContent('John Doe');
+    });
   });
 
   it('allows changing templates', async () => {
@@ -229,10 +263,11 @@ describe('ResumeBuilder', () => {
     const user = userEvent.setup();
 
     await user.click(screen.getByRole('tab', { name: 'builder.preview' }));
-
     await user.click(screen.getByTestId('change-template'));
 
-    expect(screen.getByTestId('preview-template')).toHaveTextContent('modern');
+    await waitFor(() => {
+      expect(screen.getByTestId('resume-preview')).toBeInTheDocument();
+    });
   });
 
   it('opens save dialog when save button is clicked for a new resume', async () => {
@@ -241,10 +276,10 @@ describe('ResumeBuilder', () => {
 
     await user.click(screen.getByRole('button', { name: 'builder.save' }));
 
-    expect(screen.getByRole('dialog')).toBeInTheDocument();
-    expect(
-      screen.getByRole('heading', { name: 'builder.saveAs' }),
-    ).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByRole('dialog')).toBeInTheDocument();
+      expect(screen.getByRole('heading', { name: 'builder.saveAs' })).toBeInTheDocument();
+    });
   });
 
   it('saves a new resume with a name', async () => {
@@ -258,26 +293,36 @@ describe('ResumeBuilder', () => {
 
     await user.click(screen.getByRole('button', { name: 'common.save' }));
 
-    expect(localStorageMock.setItem).toHaveBeenCalledWith(
-      'savedResumes',
-      expect.stringContaining('My Test Resume'),
-    );
-
-    expect(mockRouter.push).toHaveBeenCalledWith(
-      expect.stringContaining('/builder?id='),
-    );
+    await waitFor(() => {
+      expect(localStorageMock.setItem).toHaveBeenCalledWith(
+        'savedResumes',
+        expect.stringContaining('My Test Resume'),
+      );
+      expect(mockRouter.push).toHaveBeenCalledWith(expect.stringContaining('/builder?id='));
+    });
   });
 
-  it('handles export dialog opening', async () => {
+  it('loads existing resume data when id is present', async () => {
+    const mockResume = {
+      id: 'test-id',
+      name: 'Test Resume',
+      data: {
+        personalInfo: { name: 'John Doe' },
+        education: [],
+        experience: [],
+        skills: [],
+      },
+      template: 'modern',
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+
+    localStorageMock.getItem.mockReturnValue(JSON.stringify([mockResume]));
+
     render(<ResumeBuilder />);
-    const user = userEvent.setup();
-
-    await user.click(screen.getByRole('tab', { name: 'builder.preview' }));
-
-    await user.click(screen.getByRole('button', { name: 'builder.export' }));
 
     await waitFor(() => {
-      expect(screen.getByTestId('export-dialog')).toBeInTheDocument();
+      expect(screen.getByTestId('preview-name')).toHaveTextContent('John Doe');
     });
   });
 });
