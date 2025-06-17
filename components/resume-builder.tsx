@@ -21,7 +21,7 @@ import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useLocale } from '@/hooks/use-locale';
 import { useTranslation } from '@/hooks/use-translation';
-import exportResume from '@/lib/export';
+import exportResume, { ExportData } from '@/lib/export';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
@@ -29,6 +29,9 @@ import FormatSelector from './format-selector';
 import { Resume } from './home-content';
 import { v4 as uuidv4 } from 'uuid';
 import { useResumeData } from '@/hooks/use-resume-data';
+import { ChevronLeft, ChevronRight, Save, ChevronDown } from 'lucide-react';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Progress } from '@/components/ui/progress';
 
 export type SocialLink = {
   platform: string;
@@ -69,6 +72,8 @@ export type ResumeData = {
   skills: string[];
 };
 
+const TABS = ['personal', 'education', 'experience', 'skills', 'preview'] as const;
+
 export function ResumeBuilder() {
   const { t } = useTranslation();
   const { locale } = useLocale();
@@ -90,7 +95,27 @@ export function ResumeBuilder() {
   } = useResumeData(resumeId);
   const [saveDialogOpen, setSaveDialogOpen] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
-  const [exportFormat, setExportFormat] = useState<'image' | 'word' | 'html'>('html');
+  const [exportFormat, setExportFormat] = useState<ExportData['exportFormat']>('html');
+
+  const currentTabIndex = TABS.indexOf(activeTab as (typeof TABS)[number]);
+  const isFirstTab = currentTabIndex === 0;
+  const isLastTab = currentTabIndex === TABS.length - 1;
+
+  const handlePreviousTab = () => {
+    if (!isFirstTab) {
+      const previousTab = TABS[currentTabIndex - 1];
+      setActiveTab(previousTab);
+      window.location.hash = previousTab;
+    }
+  };
+
+  const handleNextTab = () => {
+    if (!isLastTab) {
+      const nextTab = TABS[currentTabIndex + 1];
+      setActiveTab(nextTab);
+      window.location.hash = nextTab;
+    }
+  };
 
   // Add effect to handle URL hash changes
   useEffect(() => {
@@ -249,79 +274,147 @@ export function ResumeBuilder() {
     return currentResumeId ? t('builder.save') : t('builder.save');
   }, [currentResumeId, t]);
 
+  const progress = useMemo(() => {
+    return ((currentTabIndex + 1) / TABS.length) * 100;
+  }, [currentTabIndex]);
+
   if (isLoading) {
-    return <div className='flex size-full items-center justify-center'>{t('common.loading')}</div>;
+    return (
+      <div className='flex min-h-[400px] items-center justify-center'>
+        <div className='border-primary h-8 w-8 animate-spin rounded-full border-4 border-t-transparent' />
+      </div>
+    );
   }
 
   return (
-    <div className='space-y-6'>
-      <div className='flex flex-col items-center justify-between gap-2 md:flex-row'>
-        <div>
-          <h1 className='text-3xl font-bold'>{t('builder.title')}</h1>
-          <p className='text-muted-foreground'>{t('builder.subtitle')}</p>
-        </div>
-        <div className='flex gap-2'>
-          {currentResumeId ? (
-            <>
-              <Button onClick={handleSave}>{saveButtonText}</Button>
-              <Button variant='outline' onClick={handleSaveAs}>
-                {t('builder.saveAs')}
-              </Button>
-            </>
-          ) : (
-            <Button onClick={handleSave}>{saveButtonText}</Button>
-          )}
-        </div>
+    <>
+      <div className='bg-background/95 supports-[backdrop-filter]:bg-background/60 fixed top-0 right-0 left-0 z-50 backdrop-blur'>
+        <Progress value={progress} className='h-1' />
       </div>
 
-      <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
-        <Tabs value={activeTab} onValueChange={handleTabChange}>
-          <TabsList className='grid h-fit grid-cols-2 gap-2 md:flex-row md:gap-0 lg:flex'>
-            <TabsTrigger value='personal'>{t('builder.personal')}</TabsTrigger>
-            <TabsTrigger value='education'>{t('builder.education')}</TabsTrigger>
-            <TabsTrigger value='experience'>{t('builder.experience')}</TabsTrigger>
-            <TabsTrigger value='skills'>{t('builder.skills')}</TabsTrigger>
-            <TabsTrigger value='preview'>{t('builder.preview')}</TabsTrigger>
-          </TabsList>
-          <TabsContent value='personal'>
-            <PersonalInfoForm initialData={resumeData.personalInfo} onSave={updatePersonalInfo} />
-          </TabsContent>
-          <TabsContent value='education'>
-            <EducationForm initialData={resumeData.education} onSave={updateEducation} />
-          </TabsContent>
-          <TabsContent value='experience'>
-            <ExperienceForm initialData={resumeData.experience} onSave={updateExperience} />
-          </TabsContent>
-          <TabsContent value='skills'>
-            <SkillsForm initialData={resumeData.skills} onSave={updateSkills} />
-          </TabsContent>
-          <TabsContent value='preview'>
-            <div className='space-y-4'>
-              <TemplateSelector
-                selectedTemplate={selectedTemplate}
-                onTemplateChangeAction={handleTemplateChange}
-              />
+      <div className='md:space-y-6'>
+        <div className='flex flex-col items-center justify-between gap-2 md:flex-row'>
+          <div className='hidden md:block'>
+            <h1 className='text-3xl font-bold tracking-tight'>{t('builder.title')}</h1>
+            <p className='text-muted-foreground'>{t('builder.subtitle')}</p>
+          </div>
+          <div className='hidden gap-2 md:flex'>
+            <Button onClick={handleSave} className='flex gap-2' title={t('common.save')}>
+              <Save className='size-4' />
+              <span>{saveButtonText}</span>
+            </Button>
+            {currentResumeId && (
+              <Button
+                variant='outline'
+                onClick={handleSaveAs}
+                className='flex gap-2'
+                title={t('builder.saveAs')}
+              >
+                <Save className='size-4' />
+                <span>{t('builder.saveAs')}</span>
+              </Button>
+            )}
+          </div>
+        </div>
 
-              <FormatSelector
-                exportFormat={exportFormat}
-                handleExport={handleExport}
-                isExporting={isExporting}
-                setExportFormat={setExportFormat}
-              />
+        <div className='grid grid-cols-1 gap-4 pb-18 md:grid-cols-2'>
+          <Tabs value={activeTab} onValueChange={handleTabChange} className='w-full'>
+            <TabsList className='hidden h-fit w-full grid-cols-2 gap-2 md:grid md:flex-row md:gap-0 lg:flex'>
+              <TabsTrigger value='personal'>{t('builder.personal')}</TabsTrigger>
+              <TabsTrigger value='education'>{t('builder.education')}</TabsTrigger>
+              <TabsTrigger value='experience'>{t('builder.experience')}</TabsTrigger>
+              <TabsTrigger value='skills'>{t('builder.skills')}</TabsTrigger>
+              <TabsTrigger value='preview'>{t('builder.preview')}</TabsTrigger>
+            </TabsList>
+            <div className='bg-background/95 supports-[backdrop-filter]:bg-background/60 fixed right-0 bottom-16 left-0 z-40 flex flex-col border p-4 backdrop-blur md:hidden'>
+              <div className='flex items-center justify-between gap-2'>
+                <Button variant='outline' onClick={handlePreviousTab} disabled={isFirstTab}>
+                  <ChevronLeft className='size-4' />
+                  <span className='hidden sm:inline-flex'>{t('common.previous')}</span>
+                </Button>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button variant='outline' className='flex items-center gap-2'>
+                      <span className='text-md font-medium'>{t(`builder.${activeTab}`)}</span>
+                      <ChevronDown className='size-4' />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className='w-56 p-2'>
+                    <div className='flex flex-col gap-1'>
+                      {TABS.map((tab) => (
+                        <Button
+                          key={tab}
+                          variant={activeTab === tab ? 'default' : 'ghost'}
+                          className='justify-start'
+                          onClick={() => handleTabChange(tab)}
+                        >
+                          {t(`builder.${tab}`)}
+                        </Button>
+                      ))}
+                    </div>
+                  </PopoverContent>
+                </Popover>
+                <div className='flex gap-2'>
+                  <Button onClick={handleSave} size='icon' title={t('common.save')}>
+                    <Save className='size-4' />
+                  </Button>
+                  {currentResumeId && (
+                    <Button
+                      variant='outline'
+                      onClick={handleSaveAs}
+                      size='icon'
+                      title={t('builder.saveAs')}
+                    >
+                      <Save className='size-4' />
+                    </Button>
+                  )}
+                </div>
+                <Button variant='outline' onClick={handleNextTab} disabled={isLastTab}>
+                  <span className='hidden sm:inline-flex'>{t('common.next')}</span>
+                  <ChevronRight className='size-4' />
+                </Button>
+              </div>
             </div>
-          </TabsContent>
-        </Tabs>
+            <TabsContent value='personal'>
+              <PersonalInfoForm initialData={resumeData.personalInfo} onSave={updatePersonalInfo} />
+            </TabsContent>
+            <TabsContent value='education'>
+              <EducationForm initialData={resumeData.education} onSave={updateEducation} />
+            </TabsContent>
+            <TabsContent value='experience'>
+              <ExperienceForm initialData={resumeData.experience} onSave={updateExperience} />
+            </TabsContent>
+            <TabsContent value='skills'>
+              <SkillsForm initialData={resumeData.skills} onSave={updateSkills} />
+            </TabsContent>
+            <TabsContent value='preview'>
+              <div className='space-y-4'>
+                <TemplateSelector
+                  selectedTemplate={selectedTemplate}
+                  onTemplateChangeAction={handleTemplateChange}
+                />
 
-        <Card>
-          <CardHeader>
-            <CardTitle>{t('builder.livePreview')}</CardTitle>
-          </CardHeader>
-          <CardContent className='p-6'>
-            <div className='rounded-lg border bg-white px-10 py-14 text-black shadow-xs'>
-              <ResumePreview data={resumeData} template={selectedTemplate} />
-            </div>
-          </CardContent>
-        </Card>
+                <FormatSelector
+                  exportFormat={exportFormat}
+                  handleExport={handleExport}
+                  isExporting={isExporting}
+                  setExportFormat={setExportFormat}
+                />
+              </div>
+            </TabsContent>
+          </Tabs>
+
+          <Card className={`${activeTab !== 'preview' ? 'hidden md:block' : ''}`}>
+            <CardHeader>
+              <CardTitle>{t('builder.livePreview')}</CardTitle>
+            </CardHeader>
+            <CardContent className='p-6'>
+              <div className='rounded-lg border bg-white px-10 py-14 text-black shadow-xs'>
+                <ResumePreview data={resumeData} template={selectedTemplate} />
+              </div>
+            </CardContent>
+          </Card>
+        </div>
       </div>
 
       <Dialog open={saveDialogOpen} onOpenChange={setSaveDialogOpen}>
@@ -347,6 +440,6 @@ export function ResumeBuilder() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </div>
+    </>
   );
 }

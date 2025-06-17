@@ -27,7 +27,6 @@ export const metadata: Metadata = {
     capable: true,
     statusBarStyle: 'default',
     title: APP_DEFAULT_TITLE,
-    // startUpImage: [],
   },
   formatDetection: {
     telephone: false,
@@ -68,6 +67,11 @@ export const viewport: Viewport = {
     { media: '(prefers-color-scheme: light)', color: 'white' },
     { media: '(prefers-color-scheme: dark)', color: '#09090b' },
   ],
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  viewportFit: 'cover',
 };
 
 export default function RootLayout({
@@ -83,7 +87,7 @@ export default function RootLayout({
         <link rel='apple-touch-icon' href='icons/apple-touch-icon-180x180.png' sizes='180x180' />
         <meta
           name='viewport'
-          content='minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no, user-scalable=no, viewport-fit=cover'
+          content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover'
         />
       </head>
       <body className={inter.className} suppressHydrationWarning>
@@ -96,7 +100,7 @@ export default function RootLayout({
           >
             <div className='flex min-h-screen flex-col'>
               <Navigation />
-              <main className='container mx-auto flex-1 px-4 py-6 pb-20 md:px-6 md:pb-10'>
+              <main className='container mx-auto flex-1 px-4 py-6 pb-20 md:px-6 md:pb-10 lg:max-w-7xl'>
                 {children}
               </main>
               <MobileNavigation />

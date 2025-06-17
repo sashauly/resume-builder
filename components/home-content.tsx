@@ -3,15 +3,9 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from '@/hooks/use-translation';
 import { Button } from '@/components/ui/button';
-import {
-  Card,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import Link from 'next/link';
-import { Plus, Edit, Trash2, Eye, Download, Import } from 'lucide-react';
+import { Plus, Edit, Trash2, Import, Download } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { ResumePreview } from '@/components/resume-preview';
@@ -52,6 +46,7 @@ export function HomeContent() {
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [previewResume, setPreviewResume] = useState<Resume | null>(null);
   const [exportResume, setExportResume] = useState<Resume | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const loadResumes = () => {
@@ -62,6 +57,9 @@ export function HomeContent() {
         }
       } catch (error) {
         console.error('Failed to load resumes:', error);
+        toast.error(t('common.errorLoadingResumes'));
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -147,11 +145,7 @@ export function HomeContent() {
           try {
             const resumeData: ResumeData = JSON.parse(result);
 
-            if (
-              !resumeData ||
-              typeof resumeData !== 'object' ||
-              !resumeData.personalInfo
-            ) {
+            if (!resumeData || typeof resumeData !== 'object' || !resumeData.personalInfo) {
               throw new Error('Invalid resume data format.');
             }
 
@@ -188,33 +182,28 @@ export function HomeContent() {
 
   return (
     <>
-      <div className='space-y-2 text-center'>
-        <h1 className='text-3xl font-bold'>{t('home.title')}</h1>
-        <p className='text-muted-foreground'>{t('home.subtitle')}</p>
-      </div>
-
-      <div className='container mx-auto space-y-2 p-4 md:px-6'>
-        {resumes.length === 0 ? (
-          <div className='rounded-lg border bg-muted/30 py-12 text-center'>
-            <h2 className='mb-2 text-lg font-medium'>
-              {t('home.createResume')}
-            </h2>
-            <p className='mb-4 text-muted-foreground'>
-              {t('home.createResumeDesc')}
-            </p>
+      <>
+        {isLoading ? (
+          <div className='flex min-h-[400px] items-center justify-center'>
+            <div className='border-primary h-8 w-8 animate-spin rounded-full border-4 border-t-transparent' />
+          </div>
+        ) : resumes.length === 0 ? (
+          <div className='bg-muted/30 hover:bg-muted/40 rounded-lg border py-12 text-center transition-colors'>
+            <h2 className='mb-2 text-lg font-medium'>{t('home.createResume')}</h2>
+            <p className='text-muted-foreground mb-4'>{t('home.createResumeDesc')}</p>
 
             <div className='flex flex-col items-center justify-center gap-2 md:flex-row'>
               <Button asChild>
                 <Link href='/builder'>
                   <Plus className='mr-2 size-4' />
-                  {t('home.createButton')}
+                  <span>{t('home.createButton')}</span>
                 </Link>
               </Button>
 
               <Button asChild variant='outline' onClick={handleImport}>
                 <div>
                   <Import className='mr-2 size-4' />
-                  {t('home.importButton')}
+                  <span>{t('home.importButton')}</span>
                 </div>
               </Button>
             </div>
@@ -222,81 +211,90 @@ export function HomeContent() {
         ) : (
           <div className='space-y-6'>
             <div className='flex flex-col items-center justify-between gap-2 md:flex-row'>
-              <h2 className='text-2xl font-semibold'>{t('home.myResumes')}</h2>
-              <div className='flex flex-col items-center gap-2 md:flex-row'>
-                <Button asChild>
+              <h2 className='hidden text-2xl font-semibold tracking-tight md:block'>
+                {t('home.myResumes')}
+              </h2>
+              <div className='flex w-full items-center justify-end gap-2 md:w-auto'>
+                <Button asChild className='flex gap-2'>
                   <Link href='/builder'>
-                    <Plus className='mr-2 size-4' />
-                    {t('home.createButton')}
+                    <Plus className='size-4' />
+                    <span className='hidden md:inline-flex'>{t('home.createButton')}</span>
                   </Link>
                 </Button>
 
                 <Button asChild variant='outline' onClick={handleImport}>
-                  <div>
-                    <Import className='mr-2 size-4' />
-                    {t('home.importButton')}
+                  <div className='flex gap-2'>
+                    <Import className='size-4' />
+                    <span className='hidden md:inline-flex'>{t('home.importButton')}</span>
                   </div>
                 </Button>
               </div>
             </div>
 
-            <div className='grid gap-6 md:grid-cols-2 lg:grid-cols-3'>
+            <div className='grid gap-4 md:grid-cols-2 md:gap-6 lg:grid-cols-3'>
               {resumes.map((resume) => (
-                <Card key={resume.id} className='overflow-hidden'>
+                <Card
+                  key={resume.id}
+                  className='group cursor-pointer overflow-hidden transition-all hover:shadow-md'
+                  onClick={() => handlePreview(resume)}
+                >
                   <CardHeader>
                     <div className='flex justify-between'>
                       <CardTitle className='text-lg'>{resume.name}</CardTitle>
-                      <Button
-                        variant='outline'
-                        size='sm'
-                        onClick={() => handlePreview(resume)}
-                      >
-                        <Eye className='mr-2 size-4' />
-                        {t('common.preview')}
-                      </Button>
+                      <div className='flex gap-2'>
+                        <Button
+                          variant='outline'
+                          size='sm'
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleEdit(resume.id);
+                          }}
+                        >
+                          <Edit className='size-4' />
+                        </Button>
+                        <Button
+                          variant='destructive'
+                          size='sm'
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDelete(resume.id);
+                          }}
+                        >
+                          <Trash2 className='size-4' />
+                        </Button>
+                      </div>
                     </div>
                     <CardDescription>
                       {resume.data.personalInfo.name || 'No name'}
                       {resume.data.personalInfo.jobTitle && (
-                        <span className='block text-sm text-muted-foreground'>
+                        <span className='text-muted-foreground block text-sm'>
                           {resume.data.personalInfo.jobTitle}
                         </span>
                       )}
                     </CardDescription>
                   </CardHeader>
-                  <CardFooter className='flex justify-end gap-2'>
-                    <Button
-                      variant='outline'
-                      size='sm'
-                      onClick={() => handleEdit(resume.id)}
-                    >
-                      <Edit className='size-4' />
-                    </Button>
-                    <Button
-                      variant='destructive'
-                      size='sm'
-                      onClick={() => handleDelete(resume.id)}
-                    >
-                      <Trash2 className='size-4' />
-                    </Button>
-                  </CardFooter>
+                  <div className='p-4 pt-0'>
+                    <div className='rounded-lg border bg-white p-4 text-black'>
+                      <ResumePreview
+                        data={resume.data}
+                        template={
+                          resume.template as 'classic' | 'modern' | 'professional' | 'compact'
+                        }
+                      />
+                    </div>
+                  </div>
                 </Card>
               ))}
             </div>
           </div>
         )}
-      </div>
+      </>
 
-      <AlertDialog
-        open={!!deleteId}
-        onOpenChange={(open) => !open && setDeleteId(null)}
-      >
+      <AlertDialog open={!!deleteId} onOpenChange={(open) => !open && setDeleteId(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>{t('profile.confirmDelete')}</AlertDialogTitle>
-            <AlertDialogDescription>
-              {t('profile.confirmDeleteDesc')}
-            </AlertDialogDescription>
+            <AlertDialogDescription>{t('profile.confirmDeleteDesc')}</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>{t('common.cancel')}</AlertDialogCancel>
@@ -310,19 +308,12 @@ export function HomeContent() {
         </AlertDialogContent>
       </AlertDialog>
 
-      <Dialog
-        open={!!previewResume}
-        onOpenChange={(open) => !open && setPreviewResume(null)}
-      >
+      <Dialog open={!!previewResume} onOpenChange={(open) => !open && setPreviewResume(null)}>
         <DialogContent className='max-h-[90vh] max-w-4xl overflow-auto'>
           <DialogHeader>
             <DialogTitle>{previewResume?.name}</DialogTitle>
             <DialogDescription>
-              <Button
-                variant='secondary'
-                size='sm'
-                onClick={() => handleExport(previewResume)}
-              >
+              <Button variant='secondary' size='sm' onClick={() => handleExport(previewResume)}>
                 <Download className='size-4' />
                 {t('builder.export')}
               </Button>
@@ -334,11 +325,7 @@ export function HomeContent() {
                 <ResumePreview
                   data={previewResume.data}
                   template={
-                    previewResume.template as
-                      | 'classic'
-                      | 'modern'
-                      | 'professional'
-                      | 'compact'
+                    previewResume.template as 'classic' | 'modern' | 'professional' | 'compact'
                   }
                 />
               </div>
@@ -351,14 +338,8 @@ export function HomeContent() {
         <div className='fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4'>
           <div className='max-h-[90vh] w-full max-w-4xl overflow-auto rounded-lg bg-white p-6'>
             <div className='mb-4 flex items-center justify-between'>
-              <h2 className='text-xl font-semibold'>
-                Export {exportResume.name}
-              </h2>
-              <Button
-                variant='ghost'
-                size='sm'
-                onClick={() => setExportResume(null)}
-              >
+              <h2 className='text-xl font-semibold'>Export {exportResume.name}</h2>
+              <Button variant='ghost' size='sm' onClick={() => setExportResume(null)}>
                 ×
               </Button>
             </div>
@@ -371,11 +352,7 @@ export function HomeContent() {
                 <ResumePreview
                   data={exportResume.data}
                   template={
-                    exportResume.template as
-                      | 'classic'
-                      | 'modern'
-                      | 'professional'
-                      | 'compact'
+                    exportResume.template as 'classic' | 'modern' | 'professional' | 'compact'
                   }
                 />
               </div>
@@ -385,13 +362,7 @@ export function HomeContent() {
               open={!!exportResume}
               onOpenChangeAction={(open) => !open && setExportResume(null)}
               resumeData={exportResume.data}
-              template={
-                exportResume.template as
-                  | 'classic'
-                  | 'modern'
-                  | 'professional'
-                  | 'compact'
-              }
+              template={exportResume.template as 'classic' | 'modern' | 'professional' | 'compact'}
               resumeName={exportResume.name}
             />
           </div>
