@@ -28,6 +28,7 @@ import { toast } from 'sonner';
 import FormatSelector from './format-selector';
 import { Resume } from './home-content';
 import { v4 as uuidv4 } from 'uuid';
+import { useResumeData } from '@/hooks/use-resume-data';
 
 export type SocialLink = {
   platform: string;
@@ -68,43 +69,6 @@ export type ResumeData = {
   skills: string[];
 };
 
-const initialResumeData: ResumeData = {
-  personalInfo: {
-    name: '',
-    email: '',
-    phone: '',
-    address: '',
-    summary: '',
-    photo: '',
-    jobTitle: '',
-    socialLinks: [],
-  },
-  education: [
-    {
-      institution: '',
-      degree: '',
-      fieldOfStudy: '',
-      startDate: '',
-      endDate: '',
-      description: '',
-    },
-  ],
-  experience: [
-    {
-      company: '',
-      position: '',
-      location: '',
-      startDate: '',
-      endDate: '',
-      current: false,
-      description: '',
-      achievements: '',
-      techStack: '',
-    },
-  ],
-  skills: [],
-};
-
 export function ResumeBuilder() {
   const { t } = useTranslation();
   const { locale } = useLocale();
@@ -113,67 +77,54 @@ export function ResumeBuilder() {
   const resumeId = searchParams.get('id');
 
   const [activeTab, setActiveTab] = useState('personal');
-  const [resumeData, setResumeData] = useState<ResumeData>(initialResumeData);
+  const {
+    isLoading,
+    resumeData,
+    setResumeData,
+    resumeName,
+    setResumeName,
+    currentResumeId,
+    setCurrentResumeId,
+    selectedTemplate,
+    setSelectedTemplate,
+  } = useResumeData(resumeId);
   const [saveDialogOpen, setSaveDialogOpen] = useState(false);
-  const [resumeName, setResumeName] = useState('');
-  const [currentResumeId, setCurrentResumeId] = useState<string | null>(null);
-  const [selectedTemplate, setSelectedTemplate] = useState<
-    'classic' | 'modern' | 'professional' | 'compact'
-  >('classic');
   const [isExporting, setIsExporting] = useState(false);
-  const [exportFormat, setExportFormat] = useState<'image' | 'word' | 'html'>(
-    'html',
-  );
-
-  useEffect(() => {
-    if (resumeId) {
-      try {
-        const savedResumes = localStorage.getItem('savedResumes');
-        if (savedResumes) {
-          const resumes = JSON.parse(savedResumes);
-          const resume = resumes.find((r: Resume) => r.id === resumeId);
-          if (resume) {
-            setResumeData(resume.data);
-            setResumeName(resume.name);
-            setCurrentResumeId(resumeId);
-            if (resume.template) {
-              setSelectedTemplate(resume.template);
-            }
-          }
-        }
-      } catch (error) {
-        console.error('Failed to load resume:', error);
-      }
-    }
-  }, [resumeId]);
+  const [exportFormat, setExportFormat] = useState<'image' | 'word' | 'html'>('html');
 
   const updatePersonalInfo = useCallback(
     (personalInfo: ResumeData['personalInfo']) => {
-      setResumeData((prev) => ({ ...prev, personalInfo }));
+      setResumeData({ ...resumeData, personalInfo });
       setActiveTab('education');
     },
-    [],
+    [resumeData, setResumeData],
   );
 
-  const updateEducation = useCallback((education: ResumeData['education']) => {
-    setResumeData((prev) => ({ ...prev, education }));
-    setActiveTab('experience');
-  }, []);
+  const updateEducation = useCallback(
+    (education: ResumeData['education']) => {
+      setResumeData({ ...resumeData, education });
+      setActiveTab('experience');
+    },
+    [resumeData, setResumeData],
+  );
 
   const updateExperience = useCallback(
     (experience: ResumeData['experience']) => {
-      setResumeData((prev) => ({ ...prev, experience }));
+      setResumeData({ ...resumeData, experience });
       setActiveTab('skills');
     },
-    [],
+    [resumeData, setResumeData],
   );
 
-  const updateSkills = useCallback((skills: ResumeData['skills']) => {
-    setResumeData((prev) => ({ ...prev, skills }));
-    setActiveTab('preview');
-  }, []);
+  const updateSkills = useCallback(
+    (skills: ResumeData['skills']) => {
+      setResumeData({ ...resumeData, skills });
+      setActiveTab('preview');
+    },
+    [resumeData, setResumeData],
+  );
 
-  const handleExport = async () => {
+  const handleExport = useCallback(async () => {
     setIsExporting(true);
 
     try {
@@ -188,7 +139,7 @@ export function ResumeBuilder() {
     } finally {
       setIsExporting(false);
     }
-  };
+  }, [exportFormat, resumeName, locale, resumeData, t]);
 
   const handleSave = useCallback(() => {
     if (currentResumeId) {
@@ -262,18 +213,22 @@ export function ResumeBuilder() {
         description: 'Please try again.',
       });
     }
-  }, [resumeName, resumeData, selectedTemplate, router, t]);
+  }, [resumeName, resumeData, selectedTemplate, router, t, setCurrentResumeId]);
 
   const handleTemplateChange = useCallback(
     (template: 'classic' | 'modern' | 'professional' | 'compact') => {
       setSelectedTemplate(template);
     },
-    [],
+    [setSelectedTemplate],
   );
 
   const saveButtonText = useMemo(() => {
     return currentResumeId ? t('builder.save') : t('builder.save');
   }, [currentResumeId, t]);
+
+  if (isLoading) {
+    return <div className='flex size-full items-center justify-center'>{t('common.loading')}</div>;
+  }
 
   return (
     <div className='space-y-6'>
@@ -300,32 +255,19 @@ export function ResumeBuilder() {
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           <TabsList className='grid h-fit grid-cols-2 gap-2 md:flex-row md:gap-0 lg:flex'>
             <TabsTrigger value='personal'>{t('builder.personal')}</TabsTrigger>
-            <TabsTrigger value='education'>
-              {t('builder.education')}
-            </TabsTrigger>
-            <TabsTrigger value='experience'>
-              {t('builder.experience')}
-            </TabsTrigger>
+            <TabsTrigger value='education'>{t('builder.education')}</TabsTrigger>
+            <TabsTrigger value='experience'>{t('builder.experience')}</TabsTrigger>
             <TabsTrigger value='skills'>{t('builder.skills')}</TabsTrigger>
             <TabsTrigger value='preview'>{t('builder.preview')}</TabsTrigger>
           </TabsList>
           <TabsContent value='personal'>
-            <PersonalInfoForm
-              initialData={resumeData.personalInfo}
-              onSave={updatePersonalInfo}
-            />
+            <PersonalInfoForm initialData={resumeData.personalInfo} onSave={updatePersonalInfo} />
           </TabsContent>
           <TabsContent value='education'>
-            <EducationForm
-              initialData={resumeData.education}
-              onSave={updateEducation}
-            />
+            <EducationForm initialData={resumeData.education} onSave={updateEducation} />
           </TabsContent>
           <TabsContent value='experience'>
-            <ExperienceForm
-              initialData={resumeData.experience}
-              onSave={updateExperience}
-            />
+            <ExperienceForm initialData={resumeData.experience} onSave={updateExperience} />
           </TabsContent>
           <TabsContent value='skills'>
             <SkillsForm initialData={resumeData.skills} onSave={updateSkills} />
