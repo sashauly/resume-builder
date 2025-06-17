@@ -17,7 +17,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
-import type { ResumeData } from '../resume-builder';
+import { DEFAULT_TEXTAREA_ROWS, type ResumeData } from '../resume-builder';
 import { useTranslation } from '@/hooks/use-translation';
 import { useState, useCallback, memo, useRef } from 'react';
 import { Upload, Plus, Trash2, Globe, Linkedin, X } from 'lucide-react';
@@ -389,7 +389,7 @@ export const PersonalInfoForm = memo(function PersonalInfoForm({
                     <FormControl>
                       <Textarea
                         placeholder={t('personalInfo.summaryPlaceholder')}
-                        rows={8}
+                        rows={DEFAULT_TEXTAREA_ROWS}
                         {...field}
                       />
                     </FormControl>

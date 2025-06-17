@@ -31,7 +31,14 @@ export function CompactTemplate({ data }: CompactTemplateProps) {
 
   return (
     <div
-      style={{ fontFamily: 'Arial, sans-serif' }}
+      style={{
+        fontFamily: 'Arial, sans-serif',
+        width: '100%',
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '1rem',
+      }}
       data-testid='compact-template'
     >
       {/* Header */}
@@ -39,7 +46,7 @@ export function CompactTemplate({ data }: CompactTemplateProps) {
         style={{
           display: 'flex',
           gap: '1rem',
-          marginBottom: '1rem',
+          width: '100%',
         }}
       >
         <div style={{ width: '70%', display: 'flex', gap: '0.5rem' }}>
@@ -54,6 +61,7 @@ export function CompactTemplate({ data }: CompactTemplateProps) {
                 height: '125px',
                 objectFit: 'cover',
                 borderRadius: '0.25rem',
+                flexShrink: 0,
               }}
             />
           ) : (
@@ -66,24 +74,26 @@ export function CompactTemplate({ data }: CompactTemplateProps) {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
+                flexShrink: 0,
               }}
             >
-              <span style={{ color: '#6b7280', fontSize: '0.875rem' }}>
+              <span style={{ color: '#6b7280', fontSize: '0.875em' }}>
                 {t('personalInfo.photo')}
               </span>
             </div>
           )}
-          <div>
+          <div style={{ flex: 1 }}>
             <h1
               style={{
-                fontSize: '1.5rem',
+                fontSize: '1.5em',
                 fontWeight: 'bold',
                 margin: '0',
+                lineHeight: '1.2',
               }}
             >
               {personalInfo.name || 'Your Name'}
             </h1>
-            <h2 style={{ fontSize: '1.25rem', color: '#4b5563' }}>
+            <h2 style={{ fontSize: '1.25em', color: '#4b5563', margin: '0.25em 0' }}>
               {personalInfo.jobTitle || 'Job Title'}
             </h2>
           </div>
@@ -101,11 +111,9 @@ export function CompactTemplate({ data }: CompactTemplateProps) {
               style={{
                 listStyle: 'none',
                 padding: '0',
-                listStyleType: 'none',
-                marginTop: '0',
-                marginBottom: '0',
+                margin: '0',
                 lineHeight: '1.25',
-                fontSize: '0.875rem',
+                fontSize: '0.875em',
                 display: 'flex',
                 flexDirection: 'column',
                 gap: '0.25rem',
@@ -136,9 +144,7 @@ export function CompactTemplate({ data }: CompactTemplateProps) {
                 personalInfo.socialLinks.map((link, index) => {
                   return (
                     <li key={index}>
-                      <span style={{ textTransform: 'capitalize' }}>
-                        {link.platform}:
-                      </span>{' '}
+                      <span style={{ textTransform: 'capitalize' }}>{link.platform}:</span>{' '}
                       <a
                         href={getSocialUrl(link.platform, link.username)}
                         target='_blank'
@@ -161,7 +167,8 @@ export function CompactTemplate({ data }: CompactTemplateProps) {
           display: 'flex',
           gap: '1.5rem',
           width: '100%',
-          height: '100%',
+          flex: 1,
+          minHeight: 0,
         }}
       >
         <div style={{ width: '70%' }}>
@@ -170,14 +177,14 @@ export function CompactTemplate({ data }: CompactTemplateProps) {
             <section style={{ marginBottom: '1.5rem' }}>
               <h3
                 style={{
-                  fontSize: '1.125rem',
+                  fontSize: '1.125em',
                   fontWeight: 'bold',
-                  marginBottom: '0',
+                  marginBottom: '0.5rem',
                 }}
               >
                 {t('personalInfo.aboutMe')}
               </h3>
-              <div style={{ fontSize: '0.875rem' }}>
+              <div style={{ fontSize: '0.875em' }}>
                 {personalInfo.summary.split('\n').map((paragraph, index) => (
                   <p key={index} style={{ marginBottom: '0.5rem' }}>
                     {paragraph}
@@ -192,9 +199,9 @@ export function CompactTemplate({ data }: CompactTemplateProps) {
             <section style={{ marginBottom: '1.5rem' }}>
               <h3
                 style={{
-                  fontSize: '1.125rem',
+                  fontSize: '1.125em',
                   fontWeight: 'bold',
-                  marginBottom: '0',
+                  marginBottom: '0.5rem',
                 }}
               >
                 {t('experience.title')}
@@ -203,13 +210,10 @@ export function CompactTemplate({ data }: CompactTemplateProps) {
                 style={{
                   listStyle: 'none',
                   padding: '0',
-                  paddingLeft: '1rem',
-                  listStyleType: 'none',
-                  marginTop: '0',
-                  marginBottom: '0',
-                  lineHeight: '1.5',
+                  margin: '0',
                   display: 'flex',
                   flexDirection: 'column',
+                  gap: '1rem',
                 }}
               >
                 {experience.map((exp, index) => (
@@ -231,18 +235,17 @@ export function CompactTemplate({ data }: CompactTemplateProps) {
                     </h4>
                     <p
                       style={{
-                        fontSize: '0.875rem',
+                        fontSize: '0.875em',
                         marginBottom: '0.5rem',
                         fontWeight: '500',
                       }}
                     >
-                      {exp.startDate} –{' '}
-                      {exp.current ? t('experience.present') : exp.endDate}
+                      {exp.startDate} – {exp.current ? t('experience.present') : exp.endDate}
                     </p>
                     {exp.description && exp.description !== '' && (
                       <div
                         style={{
-                          fontSize: '0.875rem',
+                          fontSize: '0.875em',
                           lineHeight: '1.625',
                         }}
                       >
@@ -258,7 +261,7 @@ export function CompactTemplate({ data }: CompactTemplateProps) {
                         <h5
                           style={{
                             fontWeight: 'bold',
-                            fontSize: '0.875rem',
+                            fontSize: '0.875em',
                             margin: '0.25rem 0',
                           }}
                         >
@@ -266,7 +269,7 @@ export function CompactTemplate({ data }: CompactTemplateProps) {
                         </h5>
                         <ul
                           style={{
-                            fontSize: '0.875rem',
+                            fontSize: '0.875em',
                             lineHeight: '1.625',
                             listStyleType: 'disc',
                             marginLeft: '1rem',
@@ -289,13 +292,13 @@ export function CompactTemplate({ data }: CompactTemplateProps) {
                         <h5
                           style={{
                             fontWeight: 'bold',
-                            fontSize: '0.875rem',
+                            fontSize: '0.875em',
                             margin: '0.25rem 0',
                           }}
                         >
                           {t('experience.techStack')}:
                         </h5>
-                        <p style={{ fontSize: '0.875rem' }}>{exp.techStack}</p>
+                        <p style={{ fontSize: '0.875em' }}>{exp.techStack}</p>
                       </div>
                     )}
                   </li>
@@ -312,9 +315,9 @@ export function CompactTemplate({ data }: CompactTemplateProps) {
             <section style={{ marginBottom: '1.5rem' }}>
               <h3
                 style={{
-                  fontSize: '1.125rem',
+                  fontSize: '1.125em',
                   fontWeight: 'bold',
-                  marginBottom: '0',
+                  marginBottom: '0.5rem',
                 }}
               >
                 {t('skills.title')}
@@ -323,16 +326,14 @@ export function CompactTemplate({ data }: CompactTemplateProps) {
                 style={{
                   listStyleType: 'disc',
                   padding: '0',
-                  lineHeight: '1.25',
-                  marginTop: '0',
-                  marginBottom: '0',
+                  margin: '0',
                   display: 'flex',
                   flexDirection: 'column',
                   gap: '0.25rem',
                 }}
               >
                 {skills.map((skill, index) => (
-                  <li key={index} style={{ fontSize: '0.875rem' }}>
+                  <li key={index} style={{ fontSize: '0.875em' }}>
                     {skill}
                   </li>
                 ))}
@@ -345,9 +346,9 @@ export function CompactTemplate({ data }: CompactTemplateProps) {
             <section style={{ marginBottom: '1.5rem' }}>
               <h3
                 style={{
-                  fontSize: '1.125rem',
+                  fontSize: '1.125em',
                   fontWeight: 'bold',
-                  marginBottom: '0',
+                  marginBottom: '0.5rem',
                 }}
               >
                 {t('education.title')}
@@ -356,18 +357,17 @@ export function CompactTemplate({ data }: CompactTemplateProps) {
                 style={{
                   listStyle: 'none',
                   padding: '0',
-                  listStyleType: 'none',
-                  marginTop: '0',
-                  marginBottom: '0',
-                  lineHeight: '1.25',
+                  margin: '0',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '1rem',
                 }}
               >
                 {education.map((edu, index) => (
                   <li
                     key={index}
                     style={{
-                      marginBottom: '1rem',
-                      fontSize: '0.875rem',
+                      fontSize: '0.875em',
                       display: edu.institution || edu.degree ? 'block' : 'none',
                     }}
                   >
@@ -377,15 +377,12 @@ export function CompactTemplate({ data }: CompactTemplateProps) {
                       {edu.fieldOfStudy ? ` in ${edu.fieldOfStudy}` : ''}
                     </h4>
                     {edu.startDate && (
-                      <p style={{ fontSize: '0.875rem' }}>
-                        {edu.startDate} –{' '}
-                        {edu.endDate || t('experience.present')}
+                      <p style={{ fontSize: '0.875em' }}>
+                        {edu.startDate} – {edu.endDate || t('experience.present')}
                       </p>
                     )}
                     {edu.description && (
-                      <p style={{ fontSize: '0.875rem', marginTop: '0.25rem' }}>
-                        {edu.description}
-                      </p>
+                      <p style={{ fontSize: '0.875em', marginTop: '0.25rem' }}>{edu.description}</p>
                     )}
                   </li>
                 ))}

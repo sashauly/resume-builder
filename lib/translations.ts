@@ -46,6 +46,8 @@ export const translations: { en: Translations; ru: Translations } = {
       settings: 'Settings',
       settingsDesc: 'Customize your app preferences',
       settingsButton: 'Open Settings',
+      preview: 'Preview Resume',
+      previewDesc: 'Click to preview your resume',
     },
     builder: {
       title: 'Resume Builder',
@@ -238,6 +240,11 @@ export const translations: { en: Translations; ru: Translations } = {
       previewOpened: 'PDF preview opened',
       previewOpenedDesc: 'Check your browser for the preview tab',
     },
+    preview: {
+      zoomIn: 'Zoom in',
+      zoomOut: 'Zoom out',
+      resetZoom: 'Reset zoom',
+    },
   },
   ru: {
     app: {
@@ -280,6 +287,8 @@ export const translations: { en: Translations; ru: Translations } = {
       settings: 'Настройки',
       settingsDesc: 'Настройте предпочтения приложения',
       settingsButton: 'Открыть Настройки',
+      preview: 'Предпросмотр Резюме',
+      previewDesc: 'Нажмите для предпросмотра резюме',
     },
     builder: {
       title: 'Конструктор Резюме',
@@ -472,6 +481,11 @@ export const translations: { en: Translations; ru: Translations } = {
       downloadedSuccessfully: 'загружено успешно',
       previewOpened: 'Предпросмотр PDF открыт',
       previewOpenedDesc: 'Проверьте браузер для вкладки предпросмотра',
+    },
+    preview: {
+      zoomIn: 'Увеличить',
+      zoomOut: 'Уменьшить',
+      resetZoom: 'Сбросить масштаб',
     },
   },
 };

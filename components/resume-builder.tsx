@@ -74,6 +74,8 @@ export type ResumeData = {
 
 const TABS = ['personal', 'education', 'experience', 'skills', 'preview'] as const;
 
+export const DEFAULT_TEXTAREA_ROWS = 8;
+
 export function ResumeBuilder() {
   const { t } = useTranslation();
   const { locale } = useLocale();
@@ -319,7 +321,7 @@ export function ResumeBuilder() {
 
         <div className='grid grid-cols-1 gap-4 pb-18 md:grid-cols-2'>
           <Tabs value={activeTab} onValueChange={handleTabChange} className='w-full'>
-            <TabsList className='hidden h-fit w-full grid-cols-2 gap-2 md:grid md:flex-row md:gap-0 lg:flex'>
+            <TabsList className='hidden h-fit grid-cols-2 gap-2 md:grid md:flex-row md:gap-0 xl:flex xl:justify-start'>
               <TabsTrigger value='personal'>{t('builder.personal')}</TabsTrigger>
               <TabsTrigger value='education'>{t('builder.education')}</TabsTrigger>
               <TabsTrigger value='experience'>{t('builder.experience')}</TabsTrigger>
@@ -409,8 +411,8 @@ export function ResumeBuilder() {
               <CardTitle>{t('builder.livePreview')}</CardTitle>
             </CardHeader>
             <CardContent className='p-6'>
-              <div className='rounded-lg border bg-white px-10 py-14 text-black shadow-xs'>
-                <ResumePreview data={resumeData} template={selectedTemplate} />
+              <div className='relative rounded-lg border bg-white p-4 text-black'>
+                <ResumePreview data={resumeData} template={selectedTemplate} scale={0.8} />
               </div>
             </CardContent>
           </Card>

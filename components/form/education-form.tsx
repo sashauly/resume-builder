@@ -15,7 +15,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Plus, Trash2 } from 'lucide-react';
-import type { ResumeData } from '../resume-builder';
+import { DEFAULT_TEXTAREA_ROWS, type ResumeData } from '../resume-builder';
 import { useTranslation } from '@/hooks/use-translation';
 
 export interface EducationFormProps {
@@ -178,7 +178,7 @@ export function EducationForm({ initialData, onSave }: EducationFormProps) {
                         <FormControl>
                           <Textarea
                             placeholder={t('education.descriptionPlaceholder')}
-                            className='min-h-[80px]'
+                            rows={DEFAULT_TEXTAREA_ROWS}
                             {...field}
                           />
                         </FormControl>

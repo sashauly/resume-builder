@@ -16,7 +16,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Plus, Trash2 } from 'lucide-react';
-import type { ResumeData } from '../resume-builder';
+import { DEFAULT_TEXTAREA_ROWS, type ResumeData } from '../resume-builder';
 import { useTranslation } from '@/hooks/use-translation';
 
 export interface ExperienceFormProps {
@@ -210,7 +210,7 @@ export function ExperienceForm({ initialData, onSave }: ExperienceFormProps) {
                         <FormControl>
                           <Textarea
                             placeholder={t('experience.descriptionPlaceholder')}
-                            className='min-h-[100px]'
+                            rows={DEFAULT_TEXTAREA_ROWS}
                             {...field}
                           />
                         </FormControl>
@@ -230,7 +230,7 @@ export function ExperienceForm({ initialData, onSave }: ExperienceFormProps) {
                         <FormControl>
                           <Textarea
                             placeholder={t('experience.achievementsPlaceholder')}
-                            className='min-h-[80px]'
+                            rows={DEFAULT_TEXTAREA_ROWS}
                             {...field}
                           />
                         </FormControl>
@@ -250,7 +250,7 @@ export function ExperienceForm({ initialData, onSave }: ExperienceFormProps) {
                         <FormControl>
                           <Textarea
                             placeholder={t('experience.techStackPlaceholder')}
-                            className='min-h-[60px]'
+                            rows={DEFAULT_TEXTAREA_ROWS}
                             {...field}
                           />
                         </FormControl>
