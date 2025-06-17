@@ -23,7 +23,7 @@ import { useLocale } from '@/hooks/use-locale';
 import { useTranslation } from '@/hooks/use-translation';
 import exportResume from '@/lib/export';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 import FormatSelector from './format-selector';
 import { Resume } from './home-content';
@@ -91,6 +91,29 @@ export function ResumeBuilder() {
   const [saveDialogOpen, setSaveDialogOpen] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
   const [exportFormat, setExportFormat] = useState<'image' | 'word' | 'html'>('html');
+
+  // Add effect to handle URL hash changes
+  useEffect(() => {
+    const handleHashChange = () => {
+      const hash = window.location.hash.slice(1); // Remove the # symbol
+      if (['personal', 'education', 'experience', 'skills', 'preview'].includes(hash)) {
+        setActiveTab(hash);
+      }
+    };
+
+    // Set initial tab from hash
+    handleHashChange();
+
+    // Listen for hash changes
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, []);
+
+  // Update hash when tab changes
+  const handleTabChange = (value: string) => {
+    setActiveTab(value);
+    window.location.hash = value;
+  };
 
   const updatePersonalInfo = useCallback(
     (personalInfo: ResumeData['personalInfo']) => {
@@ -252,7 +275,7 @@ export function ResumeBuilder() {
       </div>
 
       <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
-        <Tabs value={activeTab} onValueChange={setActiveTab}>
+        <Tabs value={activeTab} onValueChange={handleTabChange}>
           <TabsList className='grid h-fit grid-cols-2 gap-2 md:flex-row md:gap-0 lg:flex'>
             <TabsTrigger value='personal'>{t('builder.personal')}</TabsTrigger>
             <TabsTrigger value='education'>{t('builder.education')}</TabsTrigger>
