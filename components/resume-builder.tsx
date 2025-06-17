@@ -23,7 +23,7 @@ import { useLocale } from '@/hooks/use-locale';
 import { useTranslation } from '@/hooks/use-translation';
 import exportResume from '@/lib/export';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 import FormatSelector from './format-selector';
 import { Resume } from './home-content';
@@ -32,7 +32,7 @@ import { useResumeData } from '@/hooks/use-resume-data';
 
 export type SocialLink = {
   platform: string;
-  url: string;
+  url?: string;
   username: string;
 };
 
@@ -41,30 +41,30 @@ export type ResumeData = {
     name: string;
     email: string;
     phone: string;
-    address: string;
-    summary: string;
-    photo: string;
+    address?: string;
+    summary?: string;
+    photo?: string;
     jobTitle: string;
     socialLinks: SocialLink[];
   };
   education: {
     institution: string;
     degree: string;
-    fieldOfStudy: string;
+    fieldOfStudy?: string;
     startDate: string;
     endDate: string;
-    description: string;
+    description?: string;
   }[];
   experience: {
     company: string;
     position: string;
-    location: string;
+    location?: string;
     startDate: string;
     endDate: string;
-    current: boolean;
+    current?: boolean;
     description: string;
-    achievements: string;
-    techStack: string;
+    achievements?: string;
+    techStack?: string;
   }[];
   skills: string[];
 };

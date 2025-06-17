@@ -67,8 +67,7 @@ export const translations: { en: Translations; ru: Translations } = {
       exportHtml: 'Export as HTML',
       exportJson: 'Export as JSON',
       exportOptions: 'Export Options',
-      previewEmpty:
-        'Start filling out the form to see your resume preview here.',
+      previewEmpty: 'Start filling out the form to see your resume preview here.',
     },
     profile: {
       title: 'My Resumes',
@@ -121,11 +120,13 @@ export const translations: { en: Translations; ru: Translations } = {
       address: 'Address',
       addressPlaceholder: 'City, State',
       summary: 'Professional Summary',
-      summaryPlaceholder:
-        'A brief summary of your professional background and goals',
+      summaryPlaceholder: 'A brief summary of your professional background and goals',
       aboutMe: 'About Me',
       photo: 'Profile Photo',
       photoUpload: 'Click to upload or drag and drop',
+      dragAndDrop: 'Drag and drop your photo here',
+      photoRequirements: 'JPG, PNG or GIF (max. 2MB)',
+      selectPhoto: 'Select Photo',
       jobTitle: 'Job Title',
       jobTitlePlaceholder: 'Software Developer',
       socialLinks: 'Social Links',
@@ -180,8 +181,7 @@ export const translations: { en: Translations; ru: Translations } = {
       descriptionPlaceholder: 'Describe your responsibilities and achievements',
       descriptionRequired: 'Job description is required',
       achievements: 'Achievements',
-      achievementsPlaceholder:
-        'List your key achievements and accomplishments in this role',
+      achievementsPlaceholder: 'List your key achievements and accomplishments in this role',
       techStack: 'Tech Stack',
       techStackPlaceholder:
         'Technologies, tools, and frameworks used (e.g., React, TypeScript, Docker)',
@@ -305,8 +305,7 @@ export const translations: { en: Translations; ru: Translations } = {
       edit: 'Изменить',
       delete: 'Удалить',
       confirmDelete: 'Удалить Резюме',
-      confirmDeleteDesc:
-        'Вы уверены, что хотите удалить это резюме? Это действие нельзя отменить.',
+      confirmDeleteDesc: 'Вы уверены, что хотите удалить это резюме? Это действие нельзя отменить.',
       resumeDeleted: 'Резюме Удалено',
       resumeDeletedDesc: 'Ваше резюме было успешно удалено',
     },
@@ -347,11 +346,13 @@ export const translations: { en: Translations; ru: Translations } = {
       address: 'Адрес',
       addressPlaceholder: 'Город, Область',
       summary: 'Профессиональное резюме',
-      summaryPlaceholder:
-        'Краткое описание вашего профессионального опыта и целей',
+      summaryPlaceholder: 'Краткое описание вашего профессионального опыта и целей',
       aboutMe: 'О себе',
       photo: 'Фото профиля',
       photoUpload: 'Нажмите для загрузки или перетащите файл',
+      dragAndDrop: 'Перетащите фото сюда',
+      photoRequirements: 'JPG, PNG или GIF (макс. 2MB)',
+      selectPhoto: 'Выбрать фото',
       jobTitle: 'Должность',
       jobTitlePlaceholder: 'Разработчик ПО',
       socialLinks: 'Социальные сети',
@@ -406,8 +407,7 @@ export const translations: { en: Translations; ru: Translations } = {
       descriptionPlaceholder: 'Опишите ваши обязанности и достижения',
       descriptionRequired: 'Описание работы обязательно',
       achievements: 'Достижения',
-      achievementsPlaceholder:
-        'Перечислите ваши ключевые достижения и успехи в этой роли',
+      achievementsPlaceholder: 'Перечислите ваши ключевые достижения и успехи в этой роли',
       techStack: 'Технологии',
       techStackPlaceholder:
         'Технологии, инструменты и фреймворки (например, React, TypeScript, Docker)',
@@ -444,8 +444,7 @@ export const translations: { en: Translations; ru: Translations } = {
       exportedAs: 'экспортировано как',
       pages: 'страниц',
       chooseFormat: 'Выберите формат для экспорта вашего резюме',
-      multipageSupport:
-        'Многостраничные документы будут обработаны автоматически',
+      multipageSupport: 'Многостраничные документы будут обработаны автоматически',
       exportFormat: 'Формат Экспорта',
       imageDescription: 'Формат PNG, несколько файлов для страниц',
       wordDescription: 'Многостраничный документ Word',
