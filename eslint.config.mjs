@@ -1,5 +1,4 @@
 import { FlatCompat } from '@eslint/eslintrc';
-import tailwind from 'eslint-plugin-tailwindcss';
 
 const compat = new FlatCompat({
   // import.meta.dirname is available after Node.js v20.11.0
@@ -9,7 +8,6 @@ const compat = new FlatCompat({
 /** @type {import('eslint').Linter.Config[]} */
 const eslintConfig = [
   { ignores: ['.next/**', 'public/**', 'next.config.js'] },
-  ...tailwind.configs['flat/recommended'],
   ...compat.config({
     extends: ['next/core-web-vitals', 'next/typescript', 'prettier'],
   }),
