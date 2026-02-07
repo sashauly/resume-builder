@@ -120,7 +120,7 @@
     "typescript": "^5",
     "vite-tsconfig-paths": "^5.1.4",
     "vitest": "^3.2.2",
-    "webpack": "^5.99.9"
+    "webpack": "^5.104.1"
   },
   "engines": {
     "node": ">=22.16.0",
